@@ -3,5 +3,28 @@
   "version": "0.1.0",
   "engines": {
     "node": ">=16.x"
+  },
+  "description": "md-link",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest --coveragesta",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RocioTellezLopez/LIM018-md-links.git"
+  },
+  "author": "Yaneht R. Tellez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RocioTellezLopez/LIM018-md-links/issues"
+  },
+  "homepage": "https://github.com/RocioTellezLopez/LIM018-md-links#readme",
+  "devDependencies": {
+    "eslint": "^8.23.1",
+    "jest": "^29.0.3"
   }
 }
