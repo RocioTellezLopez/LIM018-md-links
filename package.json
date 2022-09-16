@@ -10,7 +10,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jest --coveragesta",
+    "test": "jest --coverage",
     "start": "node index.js"
   },
   "repository": {
