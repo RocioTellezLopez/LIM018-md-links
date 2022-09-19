@@ -34,6 +34,15 @@ function relativeToAbsolute(pathParams) {
 }
 console.log(relativeToAbsolute(ruta));
 
+function mdExtension(pathFile) {
+  const extension = path.extname(pathFile);
+  if(extension === '.md') {
+    return extension;
+  }
+  return 'Err: No es un archivo .md';
+}
+console.log(mdExtension(ruta2));
+
 
 module.exports = {
   pathExists
