@@ -29,12 +29,15 @@ console.log(pathAbsolute(ruta));
 console.log(pathAbsolute(rutaAbsoluta));
 
 function relativeToAbsolute(pathParams) {
+  if(typeof pathParams === 'number') {return `La ruta ingresada no es valida: ${pathParams}`};
   const convertAbsolute = path.resolve(pathParams);
   return convertAbsolute;
 }
 console.log(relativeToAbsolute(ruta));
+console.log(relativeToAbsolute(123456));
 
 function mdExtension(pathFile) {
+  if(typeof pathFile === 'number') {return `La ruta ingresada no es valida: ${pathFile}`};
   const extension = path.extname(pathFile);
   if(extension === '.md') {
     return extension;
@@ -50,5 +53,8 @@ function readFile(pathFile) {
 console.log(readFile(ruta));
 
 module.exports = {
-  pathExists
+  pathExists,
+  pathAbsolute,
+  relativeToAbsolute,
+  mdExtension
 };
