@@ -43,6 +43,11 @@ function mdExtension(pathFile) {
 }
 console.log(mdExtension(ruta2));
 
+function readFile(pathFile) {
+  const file = fs.readFileSync(pathFile, 'utf8');
+  return file;
+}
+console.log(readFile(ruta));
 
 module.exports = {
   pathExists
