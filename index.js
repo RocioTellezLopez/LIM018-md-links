@@ -15,3 +15,6 @@ console.log(pathExists(ruta));
 console.log(pathExists(ruta2));
 
 
+module.exports = {
+  pathExists
+};
