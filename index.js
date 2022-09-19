@@ -28,6 +28,12 @@ function pathAbsolute(pathParams) {
 console.log(pathAbsolute(ruta));
 console.log(pathAbsolute(rutaAbsoluta));
 
+function relativeToAbsolute(pathParams) {
+  const convertAbsolute = path.resolve(pathParams);
+  return convertAbsolute;
+}
+console.log(relativeToAbsolute(ruta));
+
 
 module.exports = {
   pathExists
