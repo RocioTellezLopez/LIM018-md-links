@@ -1,7 +1,9 @@
 const fs = require('fs');
+const path = require('path');
 
 const ruta = './example/exampleFile.md';
 const ruta2 = '../img/img.jpg';
+const rutaAbsoluta = 'C:\\Users\\USUARIO\\laboratoria\\prueba';
 
 
 function pathExists(pathParams) {
@@ -13,6 +15,18 @@ function pathExists(pathParams) {
 }
 console.log(pathExists(ruta));
 console.log(pathExists(ruta2));
+
+function pathAbsolute(pathParams) {
+  const isAbsolute = path.isAbsolute(pathParams);
+  if(isAbsolute) {
+    return pathParams;
+  }
+  // const relativeToAbsolute = path.resolve(pathParams);
+  // return relativeToAbsolute;
+  return 'La ruta es relativa';
+}
+console.log(pathAbsolute(ruta));
+console.log(pathAbsolute(rutaAbsoluta));
 
 
 module.exports = {
