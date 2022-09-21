@@ -58,8 +58,31 @@ function readFile(pathFile) {
   }
 }
 
-console.log(readFile(ruta));
+// console.log(readFile(ruta));
 
+function saveLink(pathFile) {
+  const content = readFile(pathFile);
+  const regExt = /\[(.+)\]\((https?:\/\/.+)\)/gi;
+  const arrayLinks = content.match(regExt);
+  const nuevoArray = [];
+  if(arrayLinks !== null) {
+    for(let i=0; i< arrayLinks.length; i++) {
+      const indexCut = arrayLinks[i].indexOf(']');
+      const textLink = arrayLinks[i].slice(1,indexCut);
+      const urlLink = arrayLinks[i].slice(indexCut+2,-1);
+      const objeto = {
+        text: textLink,
+        href: urlLink,
+        file: pathFile
+      };
+      nuevoArray.push(objeto);
+    }
+    return nuevoArray;
+  }
+  return 'No hay links en el archivo';
+}
+
+console.log(saveLink(ruta));
 
 module.exports = {
   pathExists,
