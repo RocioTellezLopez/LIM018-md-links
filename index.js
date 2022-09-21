@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { isTypedArray } = require('util/types');
 
 const ruta = './example/exampleFile.md';
 const ruta2 = '../img/img.jpg';
@@ -13,8 +14,8 @@ function pathExists(pathParams) {
   }
   return 'Err: La ruta no existe';
 }
-console.log(pathExists(ruta));
-console.log(pathExists(ruta2));
+// console.log(pathExists(ruta));
+// console.log(pathExists(ruta2));
 
 function pathAbsolute(pathParams) {
   const isAbsolute = path.isAbsolute(pathParams);
@@ -25,32 +26,40 @@ function pathAbsolute(pathParams) {
   // return relativeToAbsolute;
   return 'La ruta es relativa';
 }
-console.log(pathAbsolute(ruta));
-console.log(pathAbsolute(rutaAbsoluta));
+// console.log(pathAbsolute(ruta));
+// console.log(pathAbsolute(rutaAbsoluta));
 
 function relativeToAbsolute(pathParams) {
-  if(typeof pathParams === 'number') {return `La ruta ingresada no es valida: ${pathParams}`};
+  if(typeof pathParams === 'number') {return `La ruta ingresada no es valida: ${pathParams}`;}
   const convertAbsolute = path.resolve(pathParams);
   return convertAbsolute;
 }
-console.log(relativeToAbsolute(ruta));
-console.log(relativeToAbsolute(123456));
+// console.log(relativeToAbsolute(ruta));
+// console.log(relativeToAbsolute(123456));
 
 function mdExtension(pathFile) {
-  if(typeof pathFile === 'number') {return `La ruta ingresada no es valida: ${pathFile}`};
+  if(typeof pathFile === 'number') {return `La ruta ingresada no es valida: ${pathFile}`;}
   const extension = path.extname(pathFile);
   if(extension === '.md') {
     return extension;
   }
   return 'Err: No es un archivo .md';
 }
-console.log(mdExtension(ruta2));
+// console.log(mdExtension(12345));
+// console.log(mdExtension(ruta));
 
 function readFile(pathFile) {
-  const file = fs.readFileSync(pathFile, 'utf8');
-  return file;
+  try{
+    const file = fs.readFileSync(pathFile, 'utf8');
+    return file;
+  }
+  catch (err){
+    return 'Err: No hay nada en el archivo';
+  }
 }
+
 console.log(readFile(ruta));
+
 
 module.exports = {
   pathExists,
