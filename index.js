@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const { isTypedArray } = require('util/types');
+const fetch = require('node-fetch');
+const url = 'https://developer.mozilla.org/es/docs/Web/HTTP/Status';
 
 const ruta = './example/exampleFile.md';
 const ruta2 = '../img/img.jpg';
@@ -81,8 +82,22 @@ function saveLink(pathFile) {
   }
   return 'No hay links en el archivo';
 }
+// console.log(saveLink(ruta));
 
-console.log(saveLink(ruta));
+// function statusHTTP(url) {
+  
+// }
+
+
+// Peticiones HTTP fetch 
+fetch(url)
+  .then((response) => {
+    console.log(response.status); 
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
 
 module.exports = {
   pathExists,
