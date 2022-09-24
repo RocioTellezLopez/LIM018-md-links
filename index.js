@@ -85,10 +85,6 @@ function saveLink(pathFile) {
 }
 // console.log(saveLink(ruta));
 
-// function statusHTTP(url) {
-  
-// }
-
 
 // Peticiones HTTP fetch 
 // fetch(url)
@@ -100,13 +96,30 @@ function saveLink(pathFile) {
 //   });
 
 // Peticiones HTTP axios
-axios.get('http//gooogle.com')
-  .then((response) => {
-    console.log(response.status);
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+const objEjemplo = {
+  text: 'Códigos de estado de respuesta HTTP - MDN',
+  href: 'https://developer.mozilla.org/es/docs/Web/HTTP/Status',
+  file: './example/exampleFile.md'
+};
+console.log(objEjemplo.href);
+
+function statusHTTP(objeto) {
+  axios.get(objeto.href)
+    .then((response) => {
+      const statusCode = response.status;
+      const messageCode = response.statusText;
+      objeto.status = statusCode;
+      objeto.message = messageCode;
+      console.log(objeto);
+      return objeto;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+console.log(statusHTTP(objEjemplo));
+
 
 
 module.exports = {
