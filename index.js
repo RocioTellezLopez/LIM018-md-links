@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const fetch = require('node-fetch');
+// const fetch = require('node-fetch');
+const axios = require('axios');
 const url = 'https://developer.mozilla.org/es/docs/Web/HTTP/Status';
 
 const ruta = './example/exampleFile.md';
@@ -90,9 +91,18 @@ function saveLink(pathFile) {
 
 
 // Peticiones HTTP fetch 
-fetch(url)
+// fetch(url)
+//   .then((response) => {
+//     console.log(response.status); 
+//   })
+//   .catch((error) => {
+//     console.log(error);
+//   });
+
+// Peticiones HTTP axios
+axios.get('http//gooogle.com')
   .then((response) => {
-    console.log(response.status); 
+    console.log(response.status);
   })
   .catch((error) => {
     console.log(error);
