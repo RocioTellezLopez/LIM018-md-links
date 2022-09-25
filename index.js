@@ -96,29 +96,51 @@ function saveLink(pathFile) {
 //   });
 
 // Peticiones HTTP axios
-const objEjemplo = {
+let objEjemplo = [{
   text: 'Códigos de estado de respuesta HTTP - MDN',
   href: 'https://developer.mozilla.org/es/docs/Web/HTTP/Status',
   file: './example/exampleFile.md'
-};
-console.log(objEjemplo.href);
+},
+{
+  text: 'Node.js file system - Documentación oficial',
+  href: 'https://nodejs.org/api/fs.html',
+  file: './example/exampleFile.md'
+},
+{
+  text: 'Node.js http.get - Documentación oficial',
+  href: 'https://nodejs.org/apiiio/http.html#http_http_get_options_callback',
+  file: './example/exampleFile.md'
+}];
+let pruebaLinks = saveLink('README.md');
+// console.log(pruebaLinks);
+// console.log(objEjemplo.href);
 
-function statusHTTP(objeto) {
-  axios.get(objeto.href)
-    .then((response) => {
-      const statusCode = response.status;
-      const messageCode = response.statusText;
-      objeto.status = statusCode;
-      objeto.message = messageCode;
-      console.log(objeto);
-      return objeto;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+function statusHTTP(arrayLinks) {
+  arrayLinks.forEach(objectLinks => {
+    axios.get(objectLinks.href)
+      .then((response) => {
+        const statusCode = response.status;
+        const messageCode = response.statusText;
+        objectLinks.status = statusCode;
+        objectLinks.message = messageCode;
+        console.log(objectLinks);
+        // console.log(response);
+        return objectLinks;
+      })
+      .catch((error) => {
+        if(error.response) {
+          objectLinks.status = error.response.status;
+          objectLinks.message = 'Fail';
+          console.log(objectLinks);
+          return objectLinks;
+        }
+      // console.log(error);
+      });
+
+  });
 }
 
-console.log(statusHTTP(objEjemplo));
+statusHTTP(objEjemplo);
 
 
 
