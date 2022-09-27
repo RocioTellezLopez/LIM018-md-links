@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-// const fetch = require('node-fetch');
 const axios = require('axios');
 const url = 'https://developer.mozilla.org/es/docs/Web/HTTP/Status';
 
@@ -62,7 +61,7 @@ function readFile(pathFile) {
 
 // console.log(readFile(ruta));
 
-function saveLink(pathFile) {
+function saveLinks(pathFile) {
   const content = readFile(pathFile);
   const regExt = /\[(.+)\]\((https?:\/\/.+)\)/gi;
   const arrayLinks = content.match(regExt);
@@ -108,39 +107,97 @@ let objEjemplo = [{
 },
 {
   text: 'Node.js http.get - Documentación oficial',
-  href: 'https://nodejs.org/apiiio/http.html#http_http_get_options_callback',
+  href: 'https://nodejs.org/api/http.html#http_http_get_options_callback',
   file: './example/exampleFile.md'
 }];
-let pruebaLinks = saveLink('README.md');
+let pruebaLinks = saveLinks('README.md');
 // console.log(pruebaLinks);
 // console.log(objEjemplo.href);
 
-function statusHTTP(arrayLinks) {
-  arrayLinks.forEach(objectLinks => {
+/* function statusHTTP(arrayLinks) {
+  const linksResponse = arrayLinks.map((objectLinks) => {
     axios.get(objectLinks.href)
       .then((response) => {
         const statusCode = response.status;
         const messageCode = response.statusText;
         objectLinks.status = statusCode;
         objectLinks.message = messageCode;
-        console.log(objectLinks);
-        // console.log(response);
+        // console.log(objectLinks);
         return objectLinks;
       })
       .catch((error) => {
         if(error.response) {
           objectLinks.status = error.response.status;
           objectLinks.message = 'Fail';
-          console.log(objectLinks);
+          // console.log(objectLinks);
           return objectLinks;
         }
       // console.log(error);
       });
-
   });
-}
+  return linksResponse;
+  // return Promise.all(linksResponse);
+} */
 
-statusHTTP(objEjemplo);
+
+// Convirtiendo en array de promesas
+// function statusHTTP(arrayLinks) {
+  
+//   const objectLinks = {};
+//   Promise.all(arrayLinks.map((objectLinks) => { return axios.get(objectLinks.href)}))
+//     .then((response) => {
+//       response.forEach(element => {
+//         const statusCode = element.status;
+//         const messageCode = element.statusText;
+//         objectLinks.status = statusCode;
+//         objectLinks.message = messageCode;
+//         console.log(objectLinks);
+//         return objectLinks;
+//       })
+        
+//     });
+// };
+
+function statusHTTP(arrayLinks) {
+  const linksResponse = arrayLinks.map(async (objectLinks) => {
+    return await (axios.get(objectLinks.href)
+      .then((response) => {
+        const statusCode = response.status;
+        const messageCode = response.statusText;
+        objectLinks.status = statusCode;
+        objectLinks.message = messageCode;
+        // console.log(objectLinks);
+        return objectLinks;
+      })
+      .catch((error) => {
+        if(error.response) {
+          objectLinks.status = error.response.status;
+          objectLinks.message = 'Fail';
+          // console.log(objectLinks);
+          return objectLinks;
+        }
+        // console.log(error);
+      }));
+  });
+  return linksResponse;
+}
+console.log(statusHTTP(objEjemplo));
+
+
+// console.log(statusHTTP(objEjemplo));
+
+
+
+// const validate = (valor) => new Promise((resolve, reject) => {
+//   resolve (() => {
+
+//   });
+//   reject(() => {
+
+//   });
+// });
+
+
 
 
 
@@ -148,5 +205,7 @@ module.exports = {
   pathExists,
   pathAbsolute,
   relativeToAbsolute,
-  mdExtension
+  mdExtension,
+  readFile,
+  saveLinks
 };
