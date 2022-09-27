@@ -158,31 +158,62 @@ let pruebaLinks = saveLinks('README.md');
 //     });
 // };
 
-function statusHTTP(arrayLinks) {
-  const linksResponse = arrayLinks.map(async (objectLinks) => {
-    return await (axios.get(objectLinks.href)
-      .then((response) => {
-        const statusCode = response.status;
-        const messageCode = response.statusText;
-        objectLinks.status = statusCode;
-        objectLinks.message = messageCode;
-        // console.log(objectLinks);
-        return objectLinks;
-      })
-      .catch((error) => {
-        if(error.response) {
-          objectLinks.status = error.response.status;
-          objectLinks.message = 'Fail';
+async function statusHTTP(arrayLinks) {
+  const linksResponse = await Promise.all(
+    arrayLinks.map(async (objectLinks) => {
+      return await (axios.get(objectLinks.href)
+        .then((response) => {
+          const statusCode = response.status;
+          const messageCode = response.statusText;
+          objectLinks.status = statusCode;
+          objectLinks.message = messageCode;
           // console.log(objectLinks);
           return objectLinks;
-        }
-        // console.log(error);
-      }));
-  });
+        })
+        .catch((error) => {
+          if(error.response) {
+            objectLinks.status = error.response.status;
+            objectLinks.message = 'Fail';
+            // console.log(objectLinks);
+            return objectLinks;
+          }
+          // console.log(error);
+        })
+      );
+    })
+  );
   return linksResponse;
 }
-console.log(statusHTTP(objEjemplo));
+console.log(
+  statusHTTP(objEjemplo)
+    .then((arrayLinks) => {
+      arrayLinks.forEach((obj) => {
+        obj.name = 'HolaMundo';
+        return obj;
+      });
+      console.log(arrayLinks);
+    })
+);
 
+  // const promesas = Promise.all(linksResponse);
+  // return promesas;
+  // // return Promise.all(linksResponse);
+
+// console.log(posts)
+
+  // const posts = await Promise.all(
+  //   usernames.map(async (username) => {
+  //     return await fetchPostsFromTwitter(username)
+  //   })
+  // )
+
+  // function posts(arrayUser) {
+  //   arrayUser.map(async (username) => {
+  //     return await (axios.get(username.href));
+  //   })
+  // }
+  // console.log(posts);
+  // console.log(posts(objEjemplo));
 
 // console.log(statusHTTP(objEjemplo));
 
