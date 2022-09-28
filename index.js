@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
+const { ok } = require('assert');
 const url = 'https://developer.mozilla.org/es/docs/Web/HTTP/Status';
 
 const ruta = './example/exampleFile.md';
@@ -183,21 +184,66 @@ console.log(statusHTTP(objEjemplo)
   })
 );
 
-function stats(arrayLinks) {
+let objEjemplo2 = [{
+  text: 'Códigos de estado de respuesta HTTP - MDN',
+  href: 'https://developer.mozilla.org/esss/docs/Web/HTTP/Status',
+  file: './example/exampleFile.md',
+  status: 404,
+  message: 'Fail'
+},
+{
+  text: 'Node.js file system - Documentación oficial',
+  href: 'https://nodejs.org/api/fs.html',
+  file: './example/exampleFile.md',
+  status: 200,
+  message: 'OK'
+},
+{
+  text: 'Node.js file system - Documentación oficial',
+  href: 'https://nodejs.org/api/fs.html',
+  file: './example/exampleFile.md',
+  status: 200,
+  message: 'OK'
+},
+{
+  text: 'Node.js http.get - Documentación oficial',
+  href: 'https://nodejs.org/api/http.html#http_http_get_options_callback',
+  file: './example/exampleFile.md',
+  status: 200,
+  message: 'OK'
+},
+{
+  text: 'Node.js http.get - Documentación oficial',
+  href: 'https://nodejs.org/api/http.html#http_http_get_options_callback',
+  file: './example/exampleFile.md',
+  status: 200,
+  message: 'OK'
+}];
+
+
+function statsUnique(arrayLinks) {
   const total = arrayLinks.length;
-  // 
-  arrayLinks.forEach(objLinks => {
-    if (objLinks.status === 'OK') {
-    // filtrar los ok
-    }
-    return {
-      Total: total,
-      unique: statusOk,
-    };
-  });
+  const hrefLinks = arrayLinks.map((obj) => obj.href);
+  // console.log(hrefLinks)
+  const unique = hrefLinks.filter((obj, index) => hrefLinks.indexOf(obj) === index);
+  // arrayLinks.forEach(objLinks => {
+  //   if (objLinks.status === 'OK') {
+  // filtrar los ok
+  // }
+  return {
+    Total: total,
+    Unique: unique.length,
+  };
+  // });
 }
+console.log(statsUnique(objEjemplo2));
 
 
+function statsBroken(arrayLinks) {
+  const broken = arrayLinks.filter((obj) => obj.message === 'Fail');
+  return broken.length;
+}
+// console.log(`Links Fail --> ${statsBroken(objEjemplo2)}`);
 
 function mdLinks(path) { //, { validate: false, stats: false }) {
   const promiseMdLinks = new Promise((resolve, reject) => {
