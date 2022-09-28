@@ -11,7 +11,7 @@ const rutaAbsoluta = 'C:\\Users\\USUARIO\\laboratoria\\prueba';
 function pathExists(pathParams) {
   const pathExists = fs.existsSync(pathParams);
   if(pathExists) {
-    return pathParams;
+    return true;
   }
   return 'Err: La ruta no existe';
 }
@@ -21,10 +21,8 @@ function pathExists(pathParams) {
 function pathAbsolute(pathParams) {
   const isAbsolute = path.isAbsolute(pathParams);
   if(isAbsolute) {
-    return pathParams;
+    return true;
   }
-  // const relativeToAbsolute = path.resolve(pathParams);
-  // return relativeToAbsolute;
   return 'La ruta es relativa';
 }
 // console.log(pathAbsolute(ruta));
@@ -42,7 +40,7 @@ function mdExtension(pathFile) {
   if(typeof pathFile === 'number') {return `La ruta ingresada no es valida: ${pathFile}`;}
   const extension = path.extname(pathFile);
   if(extension === '.md') {
-    return extension;
+    return true;
   }
   return 'Err: No es un archivo .md';
 }
@@ -59,12 +57,13 @@ function readFile(pathFile) {
   }
 }
 
-// console.log(readFile(ruta));
+// console.log(readFile('./example/archivo.html'));
 
-function saveLinks(pathFile) {
-  const content = readFile(pathFile);
+function saveLinks(stringContent, path) {
+  // const content = readFile(pathFile);
   const regExt = /\[(.+)\]\((https?:\/\/.+)\)/gi;
-  const arrayLinks = content.match(regExt);
+  const arrayLinks = stringContent.match(regExt);
+  console.log;
   const nuevoArray = [];
   if(arrayLinks !== null) {
     for(let i=0; i< arrayLinks.length; i++) {
@@ -74,7 +73,7 @@ function saveLinks(pathFile) {
       const objeto = {
         text: textLink,
         href: urlLink,
-        file: pathFile
+        file: path
       };
       nuevoArray.push(objeto);
     }
@@ -114,9 +113,9 @@ let pruebaLinks = saveLinks('README.md');
 // console.log(pruebaLinks);
 // console.log(objEjemplo.href);
 
-/* function statusHTTP(arrayLinks) {
-  const linksResponse = arrayLinks.map((objectLinks) => {
-    axios.get(objectLinks.href)
+function statusHTTP(arrayLinks) {
+  return Promise.all(arrayLinks.map((objectLinks) => {
+    return (axios.get(objectLinks.href)
       .then((response) => {
         const statusCode = response.status;
         const messageCode = response.statusText;
@@ -133,102 +132,85 @@ let pruebaLinks = saveLinks('README.md');
           return objectLinks;
         }
       // console.log(error);
-      });
-  });
-  return linksResponse;
+      })
+    );
+  }));
+  // return linksResponse;
   // return Promise.all(linksResponse);
-} */
-
-
-// Convirtiendo en array de promesas
-// function statusHTTP(arrayLinks) {
-  
-//   const objectLinks = {};
-//   Promise.all(arrayLinks.map((objectLinks) => { return axios.get(objectLinks.href)}))
-//     .then((response) => {
-//       response.forEach(element => {
-//         const statusCode = element.status;
-//         const messageCode = element.statusText;
-//         objectLinks.status = statusCode;
-//         objectLinks.message = messageCode;
-//         console.log(objectLinks);
-//         return objectLinks;
-//       })
-        
-//     });
-// };
-
-async function statusHTTP(arrayLinks) {
-  const linksResponse = await Promise.all(
-    arrayLinks.map(async (objectLinks) => {
-      return await (axios.get(objectLinks.href)
-        .then((response) => {
-          const statusCode = response.status;
-          const messageCode = response.statusText;
-          objectLinks.status = statusCode;
-          objectLinks.message = messageCode;
-          // console.log(objectLinks);
-          return objectLinks;
-        })
-        .catch((error) => {
-          if(error.response) {
-            objectLinks.status = error.response.status;
-            objectLinks.message = 'Fail';
-            // console.log(objectLinks);
-            return objectLinks;
-          }
-          // console.log(error);
-        })
-      );
-    })
-  );
-  return linksResponse;
 }
-console.log(
-  statusHTTP(objEjemplo)
-    .then((arrayLinks) => {
-      arrayLinks.forEach((obj) => {
-        obj.name = 'HolaMundo';
-        return obj;
-      });
-      console.log(arrayLinks);
-    })
+
+
+// Convirtiendo en array de prome
+
+// async function statusHTTP(arrayLinks) {
+//   const linksResponse = await Promise.all(
+//     arrayLinks.map(async (objectLinks) => {
+//       return await (axios.get(objectLinks.href)
+//         .then((response) => {
+//           const statusCode = response.status;
+//           const messageCode = response.statusText;
+//           objectLinks.status = statusCode;
+//           objectLinks.message = messageCode;
+//           // console.log(objectLinks);
+//           return objectLinks;
+//         })
+//         .catch((error) => {
+//           if(error.response) {
+//             objectLinks.status = error.response.status;
+//             objectLinks.message = 'Fail';
+//             // console.log(objectLinks);
+//             return objectLinks;
+//           }
+//           // console.log(error);
+//         })
+//       );
+//     })
+//   );
+//   return linksResponse;
+// }
+
+
+
+
+console.log(statusHTTP(objEjemplo)
+  .then((arrayLinks) => {
+    arrayLinks.forEach((obj) => {
+      obj.name = 'HolaMundo';
+      return obj;
+    });
+    console.log(arrayLinks);
+    return arrayLinks;
+  })
 );
 
-  // const promesas = Promise.all(linksResponse);
-  // return promesas;
-  // // return Promise.all(linksResponse);
-
-// console.log(posts)
-
-  // const posts = await Promise.all(
-  //   usernames.map(async (username) => {
-  //     return await fetchPostsFromTwitter(username)
-  //   })
-  // )
-
-  // function posts(arrayUser) {
-  //   arrayUser.map(async (username) => {
-  //     return await (axios.get(username.href));
-  //   })
-  // }
-  // console.log(posts);
-  // console.log(posts(objEjemplo));
-
-// console.log(statusHTTP(objEjemplo));
+function stats(arrayLinks) {
+  const total = arrayLinks.length;
+  // 
+  arrayLinks.forEach(objLinks => {
+    if (objLinks.status === 'OK') {
+    // filtrar los ok
+    }
+    return {
+      Total: total,
+      unique: statusOk,
+    };
+  });
+}
 
 
 
-// const validate = (valor) => new Promise((resolve, reject) => {
-//   resolve (() => {
-
-//   });
-//   reject(() => {
-
-//   });
-// });
-
-
+function mdLinks(path) { //, { validate: false, stats: false }) {
+  const promiseMdLinks = new Promise((resolve, reject) => {
+    if(pathExists(path)) {
+      if(!pathAbsolute(path)) {
+        relativeToAbsolute(path);
+      }
+    } else {
+      reject('La ruta no existe');
+    }
+    return promiseMdLinks;
+  });
+}
 
 
 
@@ -237,6 +219,5 @@ module.exports = {
   pathAbsolute,
   relativeToAbsolute,
   mdExtension,
-  readFile,
-  saveLinks
+  readFile
 };
