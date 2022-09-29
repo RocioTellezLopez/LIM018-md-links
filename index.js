@@ -10,22 +10,17 @@ const rutaAbsoluta = 'C:\\Users\\USUARIO\\laboratoria\\prueba';
 
 
 function pathExists(pathParams) {
-  const pathExists = fs.existsSync(pathParams);
-  if(pathExists) {
-    return true;
-  }
-  return 'Err: La ruta no existe';
+  return fs.existsSync(pathParams);
 }
+
+// 'Err: La ruta no existe'
 // console.log(pathExists(ruta));
 // console.log(pathExists(ruta2));
 
 function pathAbsolute(pathParams) {
-  const isAbsolute = path.isAbsolute(pathParams);
-  if(isAbsolute) {
-    return true;
-  }
-  return 'La ruta es relativa';
+  return path.isAbsolute(pathParams);
 }
+// 'La ruta es relativa'
 // console.log(pathAbsolute(ruta));
 // console.log(pathAbsolute(rutaAbsoluta));
 
@@ -43,8 +38,9 @@ function mdExtension(pathFile) {
   if(extension === '.md') {
     return true;
   }
-  return 'Err: No es un archivo .md';
+  return false;
 }
+// 'Err: No es un archivo .md'
 // console.log(mdExtension(12345));
 // console.log(mdExtension(ruta));
 
@@ -64,7 +60,7 @@ function saveLinks(stringContent, path) {
   // const content = readFile(pathFile);
   const regExt = /\[(.+)\]\((https?:\/\/.+)\)/gi;
   const arrayLinks = stringContent.match(regExt);
-  console.log;
+
   const nuevoArray = [];
   if(arrayLinks !== null) {
     for(let i=0; i< arrayLinks.length; i++) {
@@ -122,22 +118,17 @@ function statusHTTP(arrayLinks) {
         const messageCode = response.statusText;
         objectLinks.status = statusCode;
         objectLinks.message = messageCode;
-        // console.log(objectLinks);
         return objectLinks;
       })
       .catch((error) => {
         if(error.response) {
           objectLinks.status = error.response.status;
           objectLinks.message = 'Fail';
-          // console.log(objectLinks);
           return objectLinks;
         }
-      // console.log(error);
       })
     );
   }));
-  // return linksResponse;
-  // return Promise.all(linksResponse);
 }
 
 
@@ -173,16 +164,16 @@ function statusHTTP(arrayLinks) {
 
 
 
-console.log(statusHTTP(objEjemplo)
-  .then((arrayLinks) => {
-    arrayLinks.forEach((obj) => {
-      obj.name = 'HolaMundo';
-      return obj;
-    });
-    console.log(arrayLinks);
-    return arrayLinks;
-  })
-);
+// console.log(statusHTTP(objEjemplo)
+//   .then((arrayLinks) => {
+//     arrayLinks.forEach((obj) => {
+//       obj.name = 'HolaMundo';
+//       return obj;
+//     });
+//     console.log(arrayLinks);
+//     return arrayLinks;
+//   })
+// );
 
 let objEjemplo2 = [{
   text: 'Códigos de estado de respuesta HTTP - MDN',
@@ -236,7 +227,7 @@ function statsUnique(arrayLinks) {
   };
   // });
 }
-console.log(statsUnique(objEjemplo2));
+// console.log(statsUnique(objEjemplo2));
 
 
 function statsBroken(arrayLinks) {
@@ -245,25 +236,14 @@ function statsBroken(arrayLinks) {
 }
 // console.log(`Links Fail --> ${statsBroken(objEjemplo2)}`);
 
-function mdLinks(path) { //, { validate: false, stats: false }) {
-  const promiseMdLinks = new Promise((resolve, reject) => {
-    if(pathExists(path)) {
-      if(!pathAbsolute(path)) {
-        relativeToAbsolute(path);
-      }
-    } else {
-      reject('La ruta no existe');
-    }
-    return promiseMdLinks;
-  });
-}
-
-
-
 module.exports = {
   pathExists,
   pathAbsolute,
   relativeToAbsolute,
   mdExtension,
-  readFile
+  readFile,
+  saveLinks,
+  statusHTTP,
+  statsUnique,
+  statsBroken
 };
