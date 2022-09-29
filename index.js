@@ -25,7 +25,7 @@ function pathAbsolute(pathParams) {
 // console.log(pathAbsolute(rutaAbsoluta));
 
 function relativeToAbsolute(pathParams) {
-  if(typeof pathParams === 'number') {return `La ruta ingresada no es valida: ${pathParams}`;}
+  if(typeof pathParams !== 'string') {return `La ruta ingresada no es valida: ${pathParams}`;}
   const convertAbsolute = path.resolve(pathParams);
   return convertAbsolute;
 }
@@ -47,26 +47,33 @@ function mdExtension(pathFile) {
 function readFile(pathFile) {
   try{
     const file = fs.readFileSync(pathFile, 'utf8');
-    return file;
+    if (file.length > 0) {
+      return file;
+    }
+    return 'El archivo esta vacio';
   }
   catch (err){
-    return 'Err: No hay nada en el archivo';
+    return 'Err: No es una path valido';
   }
 }
 
 // console.log(readFile('./example/archivo.html'));
 
-function saveLinks(stringContent, path) {
+function saveArrayLinks(stringContent) {
   // const content = readFile(pathFile);
   const regExt = /\[(.+)\]\((https?:\/\/.+)\)/gi;
   const arrayLinks = stringContent.match(regExt);
+  return arrayLinks;
+}
+const arrayLinks = saveArrayLinks(readFile(ruta));
 
+function objecLinks(arrayLinks, path){
   const nuevoArray = [];
-  if(arrayLinks !== null) {
+  if(arrayLinks.length > 0) {
     for(let i=0; i< arrayLinks.length; i++) {
       const indexCut = arrayLinks[i].indexOf(']');
       const textLink = arrayLinks[i].slice(1,indexCut);
-      const urlLink = arrayLinks[i].slice(indexCut+2,-1);
+      const urlLink = arrayLinks[i].slice(indexCut + 2, -1);
       const objeto = {
         text: textLink,
         href: urlLink,
@@ -78,7 +85,7 @@ function saveLinks(stringContent, path) {
   }
   return 'No hay links en el archivo';
 }
-// console.log(saveLink(ruta));
+console.log(objecLinks(arrayLinks, ruta));
 
 
 // Peticiones HTTP fetch 
@@ -106,7 +113,7 @@ let objEjemplo = [{
   href: 'https://nodejs.org/api/http.html#http_http_get_options_callback',
   file: './example/exampleFile.md'
 }];
-let pruebaLinks = saveLinks('README.md');
+// let pruebaLinks = saveLinks('README.md');
 // console.log(pruebaLinks);
 // console.log(objEjemplo.href);
 
@@ -183,6 +190,13 @@ let objEjemplo2 = [{
   message: 'Fail'
 },
 {
+  text: 'Códigos de estado de respuesta HTTP - MDN',
+  href: 'https://developer.mozilla.org/esss/docs/Web/HTTP/Status',
+  file: './example/exampleFile.md',
+  status: 404,
+  message: 'Fail'
+},
+{
   text: 'Node.js file system - Documentación oficial',
   href: 'https://nodejs.org/api/fs.html',
   file: './example/exampleFile.md',
@@ -234,7 +248,7 @@ function statsBroken(arrayLinks) {
   const broken = arrayLinks.filter((obj) => obj.message === 'Fail');
   return broken.length;
 }
-// console.log(`Links Fail --> ${statsBroken(objEjemplo2)}`);
+// console.log(statsBroken(objEjemplo2));
 
 module.exports = {
   pathExists,
@@ -242,7 +256,8 @@ module.exports = {
   relativeToAbsolute,
   mdExtension,
   readFile,
-  saveLinks,
+  saveArrayLinks,
+  objecLinks,
   statusHTTP,
   statsUnique,
   statsBroken
