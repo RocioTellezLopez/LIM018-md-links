@@ -1,24 +1,5 @@
 const functions = require('./index.js');
 
-// function mdLinks(path) { //, { validate: false, stats: false }) {
-//   const promiseMdLinks = new Promise((resolve, reject) => {
-//     let pathValidate = '';
-//     if(functions.pathExists(path)) {
-//       pathValidate = path;
-//       if(functions.pathAbsolute(path)) {
-//         pathValidate = path;
-//         // resolve('hola mundo');
-//       } else if{
-//         pathValidate = functions.relativeToAbsolute(path);
-//       }
-//     } else {
-//       reject('La ruta no existe');
-//     }
-//     reject('hola');
-//   });
-//     // console.log(promiseMdLinks);
-//   return promiseMdLinks;
-// }
 const ruta = './example/exampleFile.md';
 const ruta2 = '../img/img.jpg';
 const ruta3 = './example/index.html';
@@ -61,10 +42,19 @@ function mdLinks(path, options = { validate: false, stats: false }) {
   return promiseMdLinks;
 }
 
-mdLinks(ruta, { validate: true, stats: true })
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+// mdLinks(ruta, { validate: true, stats: true })
+//   .then((res) => {
+//     console.log(res);
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
+
+function saludo(nombre) {
+  return `Hola ${nombre}`;
+}
+
+
+module.exports = {
+  mdLinks,
+};
