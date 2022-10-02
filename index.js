@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
-const { ok } = require('assert');
 const url = 'https://developer.mozilla.org/es/docs/Web/HTTP/Status';
 
 const ruta = './example/exampleFile.md';
@@ -85,7 +84,7 @@ function objecLinks(arrayLinks, path){
   }
   return 'No hay links en el archivo';
 }
-console.log(objecLinks(arrayLinks, ruta));
+// console.log(objecLinks(arrayLinks, ruta));
 
 
 // Peticiones HTTP fetch 
@@ -237,7 +236,7 @@ function statsUnique(arrayLinks) {
   // }
   return {
     Total: total,
-    Unique: unique.length,
+    Unique: unique.length
   };
   // });
 }
@@ -246,7 +245,9 @@ function statsUnique(arrayLinks) {
 
 function statsBroken(arrayLinks) {
   const broken = arrayLinks.filter((obj) => obj.message === 'Fail');
-  return broken.length;
+  return {
+    Broken: broken.length
+  };
 }
 // console.log(statsBroken(objEjemplo2));
 
