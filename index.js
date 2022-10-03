@@ -13,7 +13,7 @@ function pathExists(pathParams) {
 }
 
 // 'Err: La ruta no existe'
-// console.log(pathExists(ruta));
+// console.log(pathExists(true));
 // console.log(pathExists(ruta2));
 
 function pathAbsolute(pathParams) {
@@ -28,11 +28,11 @@ function relativeToAbsolute(pathParams) {
   const convertAbsolute = path.resolve(pathParams);
   return convertAbsolute;
 }
-// console.log(relativeToAbsolute(ruta));
+// console.log(relativeToAbsolute(123));
 // console.log(relativeToAbsolute(123456));
 
 function mdExtension(pathFile) {
-  if(typeof pathFile === 'number') {return `La ruta ingresada no es valida: ${pathFile}`;}
+  if(typeof pathFile !== 'string') {return `La ruta ingresada no es valida: ${pathFile}`;}
   const extension = path.extname(pathFile);
   if(extension === '.md') {
     return true;
@@ -52,19 +52,26 @@ function readFile(pathFile) {
     return 'El archivo esta vacio';
   }
   catch (err){
-    return 'Err: No es una path valido';
+    return 'Err: No es una ruta valida';
   }
 }
 
 // console.log(readFile('./example/archivo.html'));
 
 function saveArrayLinks(stringContent) {
-  // const content = readFile(pathFile);
-  const regExt = /\[(.+)\]\((https?:\/\/.+)\)/gi;
-  const arrayLinks = stringContent.match(regExt);
-  return arrayLinks;
+  try{
+    const regExt = /\[(.+)\]\((https?:\/\/.+)\)/gi;
+    const arrayLinks = stringContent.match(regExt);
+    if(arrayLinks == null){
+      return [];
+    }
+    return arrayLinks;
+  }
+  catch (err){
+    return 'Err: el argumento no es valido';
+  }
 }
-const arrayLinks = saveArrayLinks(readFile(ruta));
+// const arrayLinks = saveArrayLinks(readFile(ruta));
 
 function objecLinks(arrayLinks, path){
   const nuevoArray = [];
