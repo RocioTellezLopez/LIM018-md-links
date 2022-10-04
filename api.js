@@ -9,11 +9,11 @@ const rutaAbs1 = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example\\exa
 
 
 
-function mdLinks(path, options = { validate: false, stats: false }) {
+function mdLinks(path, options) {
   const promiseMdLinks = new Promise((resolve, reject) => {
     if ( !functions.pathExists(path)) {
       reject('La ruta no existe');
-    } 
+    }
     if(!functions.pathAbsolute(path)) {// retorna -> path || mensaje
       path = functions.relativeToAbsolute(path);
     }
@@ -24,35 +24,24 @@ function mdLinks(path, options = { validate: false, stats: false }) {
     const arrayLinks = functions.saveArrayLinks(contentFile);
     const objLinks = functions.objecLinks(arrayLinks, path);
     const statusPrommise = functions.statusHTTP(objLinks);
-    const uniqueLinks = functions.statsUnique(objLinks);
-    const brokenLinks = functions.statsBroken(objLinks);
-    if(options.validate && options.stats == false){
+    if(options.validate){
       resolve(statusPrommise);
-    }
-    if(options.stats && options.validate == false){
-      resolve(uniqueLinks);
-    }
-    if(options.stats && options.validate){
-      // resolve(uniqueLinks);
-      resolve(`${uniqueLinks}
-      ${brokenLinks}`);
     }
     resolve(objLinks);
   });
   return promiseMdLinks;
 }
 
-// mdLinks(ruta, { validate: true, stats: true })
+
+
+// mdLinks(ruta, {validate: true})
 //   .then((res) => {
-//     console.log(res);
+//     console.log('promesa: ', res);
 //   })
 //   .catch((err) => {
-//     console.log(err);
+//     console.log('erro ', err);
 //   });
 
-function saludo(nombre) {
-  return `Hola ${nombre}`;
-}
 
 
 module.exports = {
