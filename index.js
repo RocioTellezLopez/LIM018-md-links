@@ -139,54 +139,12 @@ function statusHTTP(arrayLinks) {
           objectLinks.message = 'Fail';
           return objectLinks;
         }
+        return error.message;
       })
     );
   }));
 }
 
-
-// Convirtiendo en array de prome
-
-// async function statusHTTP(arrayLinks) {
-//   const linksResponse = await Promise.all(
-//     arrayLinks.map(async (objectLinks) => {
-//       return await (axios.get(objectLinks.href)
-//         .then((response) => {
-//           const statusCode = response.status;
-//           const messageCode = response.statusText;
-//           objectLinks.status = statusCode;
-//           objectLinks.message = messageCode;
-//           // console.log(objectLinks);
-//           return objectLinks;
-//         })
-//         .catch((error) => {
-//           if(error.response) {
-//             objectLinks.status = error.response.status;
-//             objectLinks.message = 'Fail';
-//             // console.log(objectLinks);
-//             return objectLinks;
-//           }
-//           // console.log(error);
-//         })
-//       );
-//     })
-//   );
-//   return linksResponse;
-// }
-
-
-
-
-// console.log(statusHTTP(objEjemplo)
-//   .then((arrayLinks) => {
-//     arrayLinks.forEach((obj) => {
-//       obj.name = 'HolaMundo';
-//       return obj;
-//     });
-//     console.log(arrayLinks);
-//     return arrayLinks;
-//   })
-// );
 
 let objEjemplo2 = [{
   text: 'Códigos de estado de respuesta HTTP - MDN',
@@ -242,8 +200,8 @@ function statsUnique(arrayLinks) {
   // filtrar los ok
   // }
   return {
-    Total: total,
-    Unique: unique.length
+    total: total,
+    unique: unique.length
   };
   // });
 }
@@ -253,10 +211,38 @@ function statsUnique(arrayLinks) {
 function statsBroken(arrayLinks) {
   const broken = arrayLinks.filter((obj) => obj.message === 'Fail');
   return {
-    Broken: broken.length
+    broken: broken.length
   };
 }
+
 // console.log(statsBroken(objEjemplo2));
+const rutaAbs1 = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example';
+
+function contentDir(pathFile) {
+  try {
+    const dirRead = fs.readdirSync(pathFile, 'utf-8');
+  
+    const newArrDir = dirRead.map((dir) => path.join(pathFile, dir));
+    // console.log(dirOpen);
+    
+    // console.log(dirRead);
+
+    return newArrDir;
+  } catch (error) {
+    return 'No es un directorio';
+  }
+}
+
+
+
+const arrDir = contentDir(rutaAbs1);
+
+// const newArrDir = arrDir.map((archivo) => path.join(rutaAbs1,archivo));
+
+// console.log(arrDir);
+
+
+
 
 module.exports = {
   pathExists,
