@@ -5,35 +5,32 @@ const { pathExists,
   mdExtension,
   readFile, 
   saveArrayLinks,
-  objecLinks} = require('../index.js');
+  objecLinks,
+  statusHTTP} = require('../index.js');
 
-// describe('mdLinks', () => {
-//   it('should...', () => {
-//     console.log('FIX ME!');
+const axios = require('axios');
+// jest.mock('axios', () => jest.fn(Promise.resolve({status: 200, message: 'OK'}))
+
+// describe('pathExists', () => {
+//   it('deberia de ser una función', () => {
+//     expect(typeof pathExists).toBe('function');
 //   });
-
+//   it('deberia retornar true si la ruta existe', () => {
+//     const path = './example/exampleFile.md';
+//     const truePath = pathExists(path);
+//     expect(truePath).toBeTruthy();
+//   });
+//   it('deberia retornar false si la ruta no existe', () => {
+//     const path = './example.md';
+//     const falsePath = pathExists(path);
+//     expect(falsePath).toBeFalsy();
+//   });
+//   it('deberia retornar false si la ruta ingresada es no es correcta', () => {
+//     const path = 'example.md';
+//     const pathString = pathExists(path);
+//     expect(pathString).toBe(false);
+//   });
 // });
-
-describe('pathExists', () => {
-  it('deberia de ser una función', () => {
-    expect(typeof pathExists).toBe('function');
-  });
-  it('deberia retornar true si la ruta existe', () => {
-    const path = './example/exampleFile.md';
-    const truePath = pathExists(path);
-    expect(truePath).toBeTruthy();
-  });
-  it('deberia retornar false si la ruta no existe', () => {
-    const path = './example.md';
-    const falsePath = pathExists(path);
-    expect(falsePath).toBeFalsy();
-  });
-  it('deberia retornar false si la ruta ingresada es no es correcta', () => {
-    const path = 'example.md';
-    const pathString = pathExists(path);
-    expect(pathString).toBe(false);
-  });
-});
 
 describe('pathAbsolute', () => {
   it('deberia de ser una función', () => {
@@ -160,11 +157,30 @@ describe('objectLinks', () =>{
     const path = './path/mdPrueba.md';
     const objLinks = objecLinks(arrEmpty, path);
     expect(objLinks).toBe('No hay links en el archivo');
-  })
-  // it('deberia de retornar mensaje de error si el argumento no es valido', () => {
-  //   const string = '';
-  //   const path = './path/mdPrueba.md';
-  //   const objLinks = objecLinks(string, path);
-  //   expect(objLinks).toBe();
-  // });
+  });
 });
+
+describe('statusHTTP', () => {
+  it('deberia de retornar un array con objetos', () => {
+    const arrayLinks = [{
+      text: 'Códigos de estado de respuesta HTTP - MDN',
+      href: 'https://developer.mozilla.org/es/docs/Web/HTTP/Status',
+      file: './example/exampleFile.md'
+    },
+    {
+      text: 'Node.js file system - Documentación oficial',
+      href: 'https://nodejs.org/api/fs.html',
+      file: './example/exampleFile.md'
+    },
+    {
+      text: 'Node.js http.get - Documentación oficial',
+      href: 'https://nodejs.org/api/http.html#http_http_get_options_callback',
+      file: './example/exampleFile.md'
+    }];
+    const arrayStatus = statusHTTP(arrayLinks);
+    arrayLinks.then((response) => {
+      expect().toEqual()
+    })
+    
+  })
+})
