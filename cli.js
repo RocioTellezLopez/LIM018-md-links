@@ -12,12 +12,11 @@ const {mdLinks} = require('./api.js');
 
 // console.log(`hello: ${argv}`);
 const route = process.argv[2];
-const validate = process.argv[3];
-const stats = process.argv[4];
+const options = process.argv[3];
 
 // console.log(`Este es la ruta ingresada: ${route} ${validate} ${stats}`);
 
-mdLinks(route)
+mdLinks(route, {validate: true} )
   .then((res) => {
     console.log(res);
   })
