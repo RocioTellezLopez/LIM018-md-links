@@ -14,10 +14,26 @@ function mdLinks(path, options) {
     if ( !functions.pathExists(path)) {
       reject('La ruta no existe');
     }
-    if(!functions.pathAbsolute(path)) {// retorna -> path || mensaje
+    if(!functions.pathAbsolute(path)) {
       path = functions.relativeToAbsolute(path);
     }
+
+    const arrArchivo = [];
+    const arrDirectorie = [];
+
+    if(functions.isDirectory(path)){
+      const dirRead = functions.readDirectory(path); // array con elcontenido del directorio
+      
+      for (let i=0; i<dirRead.length; i++){
+        if(functions.isDirectory(dirRead[i])){
+          arrDirectorie.push(dirRead[i]);
+        } else{
+          arrArchivo.push(dirRead[i]);
+        }
+      }
+    }
     if(!functions.mdExtension(path)){
+
       reject('No es un archivo .md');
     }
     const contentFile = functions.readFile(path);

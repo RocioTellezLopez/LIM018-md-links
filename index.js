@@ -217,31 +217,76 @@ function statsBroken(arrayLinks) {
 
 // console.log(statsBroken(objEjemplo2));
 const rutaAbs1 = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example';
+const rutaAbs2 = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links';
 
 function contentDir(pathFile) {
-  try {
-    const dirRead = fs.readdirSync(pathFile, 'utf-8');
-  
-    const newArrDir = dirRead.map((dir) => path.join(pathFile, dir));
-    // console.log(dirOpen);
-    
-    // console.log(dirRead);
-
-    return newArrDir;
-  } catch (error) {
-    return 'No es un directorio';
+  const arrArchivo = [];
+  const arrDirectories = [];
+  const dirRead = readDirectory(pathFile); // array con elcontenido del directorio
+     
+  for (let i=0; i<dirRead.length; i++){
+    if(isDirectory(dirRead[i])){
+      arrDirectories.push(dirRead[i]);
+    } else{
+      arrArchivo.push(dirRead[i]);
+    }
   }
+  if(arrDirectories.length > 0) {
+    for (let i=0; i<arrDirectories.length; i++){
+      contentDir(arrDirectories[i]);
+    }
+  }
+  return arrArchivo;
 }
 
+console.log(contentDir(rutaAbs1));
 
 
-const arrDir = contentDir(rutaAbs1);
-
-// const newArrDir = arrDir.map((archivo) => path.join(rutaAbs1,archivo));
-
-// console.log(arrDir);
 
 
+
+
+
+// const dirRead = fs.readdirSync(pathFile, 'utf-8');
+  
+// const newArrDir = dirRead.map((dir) => path.join(pathFile, dir));
+
+// const arrArchivo = [];
+// const arrDirectorie = [];
+// for(let i=0; i<newArrDir.length; i++){
+//   if(fs.statSync(newArrDir[i]).isDirectory()){
+//     arrDirectorie.push(newArrDir[i]);
+
+//   } else {
+//     arrArchivo.push(newArrDir[i]);
+//   }
+// }
+// return [arrArchivo, arrDirectory];
+// return arrArchivo;
+
+
+
+
+
+
+function isDirectory(pathFile) {
+  return fs.statSync(pathFile).isDirectory(); 
+}
+
+function readDirectory(pathFile) {
+  const dirRead = fs.readdirSync(pathFile, 'utf-8');
+  console.log(dirRead);
+  const newArrDir = dirRead.map((dir) => path.join(pathFile, dir));
+  return newArrDir;
+}
+
+// console.log(readDirectory(rutaAbs2));
+
+// const arrDirAndFile = contentDir(rutaAbs1);
+// const arrayArchivos = arrDirAndFile[0];
+// const arrayDirectorio = arrDirAndFile[1];
+
+// console.log(arrayArchivos, arrayDirectorio);
 
 
 module.exports = {
@@ -254,5 +299,7 @@ module.exports = {
   objecLinks,
   statusHTTP,
   statsUnique,
-  statsBroken
+  statsBroken,
+  isDirectory,
+  readDirectory
 };
