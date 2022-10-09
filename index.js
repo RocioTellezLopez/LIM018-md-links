@@ -216,30 +216,53 @@ function statsBroken(arrayLinks) {
 }
 
 // console.log(statsBroken(objEjemplo2));
-const rutaAbs1 = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example';
-const rutaAbs2 = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links';
+const rutaAbs1 = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example\\exampleFile.md';
+const rutaAbs2 = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example';
 
-function contentDir(pathFile) {
-  const arrArchivo = [];
-  const arrDirectories = [];
-  const dirRead = readDirectory(pathFile); // array con elcontenido del directorio
-     
-  for (let i=0; i<dirRead.length; i++){
-    if(isDirectory(dirRead[i])){
-      arrDirectories.push(dirRead[i]);
+
+
+function contentDir(path) {
+  let arrFile = [];
+  let arrDirectories = [];
+
+  const dirRead = readDirectory(path); // array con elcontenido del directorio
+  for (let i=0; i<dirRead.length; i++){ // recorro el array
+    if(isDirectory(dirRead[i])){ // si es directorio
+      arrDirectories.push(dirRead[i]); // almaceno el directorio actual en arrDirectories
     } else{
-      arrArchivo.push(dirRead[i]);
+      arrFile.push(dirRead[i]); // es un archivo y almacena en arrFile
     }
   }
   if(arrDirectories.length > 0) {
     for (let i=0; i<arrDirectories.length; i++){
-      contentDir(arrDirectories[i]);
+      arrFile.push(contentDir(arrDirectories[i]));
     }
+  } else {
+    return arrFile;
   }
-  return arrArchivo;
+  return arrFile.flat();
 }
 
-console.log(contentDir(rutaAbs1));
+// contentDir(rutaAbs2);
+console.log(contentDir(rutaAbs2));
+
+
+
+
+
+// identificar caso base
+// identificar el caso recursivo
+// laa declaraciones de mi funcion conducen al caso base
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -269,18 +292,23 @@ console.log(contentDir(rutaAbs1));
 
 
 
-function isDirectory(pathFile) {
-  return fs.statSync(pathFile).isDirectory(); 
+function isDirectory(path) {
+  return fs.statSync(path).isDirectory(); 
 }
+
+function isFile(path) {
+  return fs.statSync(path).isFile();  
+}
+
+// console.log(isFile(ruta));
 
 function readDirectory(pathFile) {
   const dirRead = fs.readdirSync(pathFile, 'utf-8');
-  console.log(dirRead);
   const newArrDir = dirRead.map((dir) => path.join(pathFile, dir));
   return newArrDir;
 }
 
-// console.log(readDirectory(rutaAbs2));
+// console.log(readDirectory(rutaAbs1));
 
 // const arrDirAndFile = contentDir(rutaAbs1);
 // const arrayArchivos = arrDirAndFile[0];
