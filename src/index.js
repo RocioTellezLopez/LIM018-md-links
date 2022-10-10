@@ -22,63 +22,73 @@ function mdLinks(path, options) {
 
     if(functions.isDirectory(path)) { // si no es un directorio agrega el path a un array;
       const arrFileDir = functions.contentDir(path); // array con el contenido del directorio
-      console.log('este es el contenido del directorio', arrFileDir);
+      // console.log('este es el contenido del directorio', arrFileDir);
       arrFiles.push(arrFileDir);
     }
     if(functions.isFile(path)) {
       arrFiles.push(path);
     }
     
-    if(arrFiles.length === 0){
+    arrFiles = arrFiles.flat();
+    const mdFiles = arrFiles.filter((files) => functions.mdExtension(files)); // array con archivos .md
+    
+    if(mdFiles.length === 0){
       reject('La ruta ingresada no contiene ningun archivo .md'); //
     }
-    arrFiles = arrFiles.flat();
-    const mdFiles = arrFiles.filter((files) => functions.mdExtension(files));
-    
-    console.log('---------');
-    console.log('este es md ->', mdFiles);
+    // console.log('---------');
+    // console.log('este es md ->', mdFiles);
+    const arrPromesas = [];
+    const arrObjetos = [];
+    const arrStatsUnique = [];
+    const arrStatsBroquen = [];
+    const promesasPendientes = [];
 
     mdFiles.forEach((fileMd) => {
-      if(!functions.mdExtension(fileMd)) {
-        reject('No es un archivo .md');
-      }
       const contentFile = functions.readFile(fileMd);
       const arrayLinks = functions.saveArrayLinks(contentFile);
       // console.log(arrayLinks);
       const objLinks = functions.objecLinks(arrayLinks, fileMd);
-      const statusPrommise = functions.statusHTTP(objLinks);
-      if(options.validate){
-        resolve(statusPrommise);
-      } else{
-        resolve(objLinks);
-      }
-    });
-    // console.log('este es md ->', arrFiles);
-
-    // console.log('arrFiles despues de leer el directorio',arrFiles.length);
-    // for (let i = 0; i < mdFiles.length; i++) {
-    //   const pathNewFile = mdFiles[i];
-    //   // console.log('Ingresa al for', pathNewFile);
-
-    //   // console.log(functions.mdExtension(pathNewFile));
-    //   // console.log('este es', pathNewFile);
-
-    //   if(!functions.mdExtension(pathNewFile)){
-    //     reject('No es un archivo .md');
-    //   }
-    //   console.log('ingresa aqui');
-    //   const contentFile = functions.readFile(pathNewFile);
-    //   const arrayLinks = functions.saveArrayLinks(contentFile);
-    //   // console.log(arrayLinks);
-    //   const objLinks = functions.objecLinks(arrayLinks, pathNewFile);
-    //   const statusPrommise = functions.statusHTTP(objLinks);
-    //   if(options.validate){
-    //     resolve(statusPrommise);
-    //   } else{
-    //     resolve(objLinks);
-    //   }
+      // console.log('objetos dentro de for', objLinks);
+      const statusPrommise = functions.statusHTTP(objLinks); //.then((res) => console.log('promesas de status', res));
       
+      promesasPendientes.push(statusPrommise);
+
+      statusPrommise.then((resultLinks) => {
+        console.log('resultado de la promesa',resultLinks);
+        arrPromesas.push(resultLinks);
+        const linksBroken = functions.statsBroken(resultLinks);
+        arrStatsBroquen.push(linksBroken);
+
+      });
+
+      const linksUnique = functions.statsUnique(objLinks);
+      arrStatsUnique.push(linksUnique);
+      
+      arrObjetos.push(objLinks);
+    });
+    
+    console.log('promesas pendientes', promesasPendientes);
+    console.log('array de promesas resultas', arrPromesas);
+
+    console.log('array de stats unique', arrStatsUnique);
+
+    if(options.validate){
+      resolve(arrPromesas);
+    } else{
+      resolve(arrObjetos);
+    }
+
+    if(options.stats){
+      resolve(arrStatsUnique);
+    } 
+
+    if (options.stats && options.validate) {
+      resolve([arrStatsUnique, arrStatsBroquen]);
+    }
+    // else{
+    //   resolve(arrObjetos);
     // }
+
   });
   return promiseMdLinks;
 }
@@ -87,7 +97,7 @@ function mdLinks(path, options) {
 
 mdLinks(rutaDir, {validate: true})
   .then((res) => {
-    console.log('promesa: ', res);
+    console.log('promesa: =>', res);
   })
   .catch((err) => {
     console.log('err: ', err);

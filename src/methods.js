@@ -88,7 +88,7 @@ function objecLinks(arrayLinks, path){
     }
     return nuevoArray;
   }
-  return 'No hay links en el archivo';
+  return []; // problema con el map cambio por array []
 }
 
 // Peticiones HTTP axios
@@ -130,14 +130,19 @@ function statsUnique(arrayLinks) {
 }
 
 function statsBroken(arrayLinks) {
-  const broken = arrayLinks.filter((obj) => obj.message === 'Fail');
-  return {
-    broken: broken.length
-  };
+  try {
+    const broken = arrayLinks.filter((obj) => obj.message === 'Fail');
+    return {
+      broken: broken.length
+    };
+  } catch (error) {
+    return 'err: El argumento ingresado no es un array.';
+  }
+  
 }
 
 // const rutaAbs1 = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example\\exampleFile.md';
-// const rutaAbs2 = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example';
+const rutaAbs2 = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example';
 
 function contentDir(path) {
   let arrFile = [];
@@ -160,6 +165,8 @@ function contentDir(path) {
   }
   return arrFile.flat();
 }
+
+// console.log(contentDir(rutaAbs2));
 
 function isDirectory(path) {
   return fs.statSync(path).isDirectory(); 
