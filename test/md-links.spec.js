@@ -6,31 +6,33 @@ const { pathExists,
   readFile, 
   saveArrayLinks,
   objecLinks,
-  statusHTTP} = require('../index.js');
+  statusHTTP,
+  statsUnique,
+  statsBroken} = require('../src/methods.js');
 
 const axios = require('axios');
-// jest.mock('axios', () => jest.fn(Promise.resolve({status: 200, message: 'OK'}))
+jest.mock('axios');
 
-// describe('pathExists', () => {
-//   it('deberia de ser una función', () => {
-//     expect(typeof pathExists).toBe('function');
-//   });
-//   it('deberia retornar true si la ruta existe', () => {
-//     const path = './example/exampleFile.md';
-//     const truePath = pathExists(path);
-//     expect(truePath).toBeTruthy();
-//   });
-//   it('deberia retornar false si la ruta no existe', () => {
-//     const path = './example.md';
-//     const falsePath = pathExists(path);
-//     expect(falsePath).toBeFalsy();
-//   });
-//   it('deberia retornar false si la ruta ingresada es no es correcta', () => {
-//     const path = 'example.md';
-//     const pathString = pathExists(path);
-//     expect(pathString).toBe(false);
-//   });
-// });
+describe('pathExists', () => {
+  it('deberia de ser una función', () => {
+    expect(typeof pathExists).toBe('function');
+  });
+  it('deberia retornar true si la ruta existe', () => {
+    const path = './example/exampleFile.md';
+    const truePath = pathExists(path);
+    expect(truePath).toBeTruthy();
+  });
+  it('deberia retornar false si la ruta no existe', () => {
+    const path = './example.md';
+    const falsePath = pathExists(path);
+    expect(falsePath).toBeFalsy();
+  });
+  it('deberia retornar false si la ruta ingresada es no es correcta', () => {
+    const path = 'example.md';
+    const pathString = pathExists(path);
+    expect(pathString).toBe(false);
+  });
+});
 
 describe('pathAbsolute', () => {
   it('deberia de ser una función', () => {
@@ -161,7 +163,8 @@ describe('objectLinks', () =>{
 });
 
 describe('statusHTTP', () => {
-  it('deberia de retornar un array con objetos', () => {
+  it('deberia de retornar un array con objetos con propiedades de status: 200 y message: OK', () => {
+    axios.get.mockImplementation(() => Promise.resolve({status: 200, statusText: 'OK'}));
     const arrayLinks = [{
       text: 'Códigos de estado de respuesta HTTP - MDN',
       href: 'https://developer.mozilla.org/es/docs/Web/HTTP/Status',
@@ -171,16 +174,142 @@ describe('statusHTTP', () => {
       text: 'Node.js file system - Documentación oficial',
       href: 'https://nodejs.org/api/fs.html',
       file: './example/exampleFile.md'
+    }];
+    const arrayStatusHTTP = statusHTTP(arrayLinks);
+    const arrResult = [{
+      text: 'Códigos de estado de respuesta HTTP - MDN',
+      href: 'https://developer.mozilla.org/es/docs/Web/HTTP/Status',
+      file: './example/exampleFile.md',
+      status: 200,
+      message: 'OK'
+    },
+    {
+      text: 'Node.js file system - Documentación oficial',
+      href: 'https://nodejs.org/api/fs.html',
+      file: './example/exampleFile.md',
+      status: 200,
+      message: 'OK'
+    }];
+    arrayStatusHTTP.then((response) => {
+      expect(response).toEqual(arrResult);
+    });
+  });
+  // it('deberia de retornar un array con objetos con propiedades de status: 404  y message: Fail', () => {
+  //   axios.get.mockImplementation(() => Promise.reject({status: 404, statusText: 'Fail'}));
+  //   const arrayLinks = [{
+  //     text: 'Node.js http.get - Documentación oficial',
+  //     href: 'https://nodejs.org/apiia/http.html#http_http_get_options_callback',
+  //     file: './example/exampleFile.md'
+  //   }];
+  //   const arrayStatusFail = statusHTTP(arrayLinks);
+  //   const arrResultFail = [{
+  //     text: 'Node.js http.get - Documentación oficial',
+  //     href: 'https://nodejs.org/apiia/http.html#http_http_get_options_callback',
+  //     file: './example/exampleFile.md',
+  //     status: 404,
+  //     message: 'Fail'
+  //   }];
+  //   arrayStatusFail.then((res) => {
+  //     console.log(res);
+  //     expect(res).toEqual(arrResultFail);
+  //   });
+  // });
+});
+
+describe('statsUnique', () => {
+  it('deberia de retornar el total de links y links unicos de un array', () =>{
+    const arrFiles = [{
+      text: 'Códigos de estado de respuesta HTTP - MDN',
+      href: 'https://developer.mozilla.org/esss/docs/Web/HTTP/Status',
+      file: './example/exampleFile.md',
+      status: 200,
+      message: 'OK'
+    },
+    {
+      text: 'Node.js file system - Documentación oficial',
+      href: 'https://nodejs.org/api/fs.html',
+      file: './example/exampleFile.md',
+      status: 200,
+      message: 'OK'
+    },
+    {
+      text: 'Node.js file system - Documentación oficial',
+      href: 'https://nodejs.org/api/fs.html',
+      file: './example/exampleFile.md',
+      status: 200,
+      message: 'OK'
     },
     {
       text: 'Node.js http.get - Documentación oficial',
       href: 'https://nodejs.org/api/http.html#http_http_get_options_callback',
-      file: './example/exampleFile.md'
+      file: './example/exampleFile.md',
+      status: 200,
+      message: 'OK'
+    },
+    {
+      text: 'Node.js http.get - Documentación oficial',
+      href: 'https://nodejs.org/api/http.html#http_http_get_options_callback',
+      file: './example/exampleFile.md',
+      status: 200,
+      message: 'OK'
     }];
-    const arrayStatus = statusHTTP(arrayLinks);
-    arrayLinks.then((response) => {
-      expect().toEqual()
-    })
-    
-  })
-})
+
+    const linksUnique = statsUnique(arrFiles);
+
+    expect(linksUnique).toEqual({total: 5, unique: 3});
+  });
+
+  it('deberia retornar links total y unicos 0, si se ingresa un array vacio', () => {
+    const arrFiles = [];
+
+    const linksUnq = statsUnique(arrFiles);
+
+    expect(linksUnq).toEqual({total: 0, unique: 0});
+  });
+
+  it('deberia retornar mensaje de error si el argumento no es un array', () => {
+    const arrFiles = '';
+
+    const linksUnq = statsUnique(arrFiles);
+
+    expect(linksUnq).toBe('err: El argumento ingresado no es un array.');
+  });
+});
+
+describe('statsBroken', () => {
+  it('deberia de retornar el numero de links Fail de un array', () => {
+    const arrBroken = [{
+      text: 'Códigos de estado de respuesta HTTP - MDN',
+      href: 'https://developer.mozilla.org/esss/docs/Web/HTTP/Status',
+      file: './example/exampleFile.md',
+      status: 404,
+      message: 'Fail'
+    },
+    {
+      text: 'Node.js file system - Documentación oficial',
+      href: 'https://nodejs.org/api/fs.html',
+      file: './example/exampleFile.md',
+      status: 404,
+      message: 'Fail'
+    },
+    {
+      text: 'Node.js http.get - Documentación oficial',
+      href: 'https://nodejs.org/api/http.html#http_http_get_options_callback',
+      file: './example/exampleFile.md',
+      status: 200,
+      message: 'OK'
+    }];
+
+    const linksBroken = statsBroken(arrBroken);
+
+    expect(linksBroken).toEqual({broken: 2});
+  });
+
+  it('deberia de retornar', () => {
+    const arrEmpty = [];
+
+    const linksBrokenEmpty = statsBroken(arrEmpty);
+
+    expect(linksBrokenEmpty).toEqual({broken: 0});
+  });
+});
