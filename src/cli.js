@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const {mdLinks} = require('./api.js');
+const {mdLinks} = require('./src/api.js');
 
 // const word = process.argv[2];
 
