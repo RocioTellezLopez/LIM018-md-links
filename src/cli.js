@@ -1,25 +1,28 @@
 #!/usr/bin/env node
 
-const {mdLinks} = require('./src/api.js');
+const {mdLinks} = require('./index.js');
+const chalk = require('chalk');
 
-// const word = process.argv[2];
 
-// const length = word.length;
-
-// const [,, ...argv] = process.argv;
-
-// console.log(`Words Length ${length}`);
-
-// console.log(`hello: ${argv}`);
 const route = process.argv[2];
-const options = process.argv[3];
 
-// console.log(`Este es la ruta ingresada: ${route} ${validate} ${stats}`);
+const argv = process.argv;
 
-mdLinks(route, {validate: true} )
-  .then((res) => {
-    console.log(res);
+// console.log(argv);
+const options = {validate: argv.includes('--validate'), stats: argv.includes('--stats')};
+
+// console.log(options);
+// console.log(chalk.blue(`Este es la ruta ingresada: ${route} ${options}`));
+
+
+mdLinks(route, options)
+  .then((resArrPromise) => {
+    console.log('promesa: =>', resArrPromise);
+    // resArrPromise.forEach(elementPromise => {
+    //   elementPromise.then((resPromise) => console.log(resPromise));
+      
+    // });
   })
-  .catch((error) => {
-    console.log(error);
+  .catch((err) => {
+    console.log('err: ', err);
   });
