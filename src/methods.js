@@ -104,16 +104,29 @@ function statusHTTP(arrayLinks) {
         return objectLinks;
       })
       .catch((error) => {
+        // console.log(error);
         if(error.response) {
           objectLinks.status = error.response.status;
           objectLinks.message = 'Fail';
           return objectLinks;
+        } else {
+          return error.message;
         }
-        return error.message;
+        
       })
     );
   }));
 }
+
+const ejemplo = [{
+  text: 'Códigos de estado de respuesta HTTP - MDN',
+  href: 'https://developer.mozilla.org/es/docs/Webbb/HTTP/Status',
+  file: 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example\\exampleFile.md'
+}];
+
+// console.log(statusHTTP(ejemplo).then((res) => console.log(res)).catch((e) => console.log(e)));
+
+
 
 function statsUnique(arrayLinks) {
   try {
