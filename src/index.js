@@ -37,10 +37,9 @@ function mdLinks(path, options) {
     }
     // console.log('---------');
     // console.log('este es md ->', mdFiles);
-    const arrPromesas = [];
     const arrObjetos = [];
     const arrStatsUnique = [];
-    const arrStatsBroquen = [];
+    const arrStatsBroquen = []; //
     const promesasPendientes = [];
 
     mdFiles.forEach((fileMd) => {
@@ -53,13 +52,12 @@ function mdLinks(path, options) {
       
       promesasPendientes.push(statusPrommise);
 
-      statusPrommise.then((resultLinks) => {
-        console.log('resultado de la promesa',resultLinks);
-        arrPromesas.push(resultLinks);
-        const linksBroken = functions.statsBroken(resultLinks);
-        arrStatsBroquen.push(linksBroken);
-
-      });
+      // statusPrommise.then((resultLinks) => {
+      //   // console.log('resultado de la promesa',resultLinks);
+      //   arrPromesas.push(resultLinks);
+      //   const linksBroken = functions.statsBroken(resultLinks);
+      //   arrStatsBroquen.push(linksBroken);
+      // });
 
       const linksUnique = functions.statsUnique(objLinks);
       arrStatsUnique.push(linksUnique);
@@ -67,27 +65,42 @@ function mdLinks(path, options) {
       arrObjetos.push(objLinks);
     });
     
-    console.log('promesas pendientes', promesasPendientes);
-    console.log('array de promesas resultas', arrPromesas);
+    // console.log('promesas pendientes', promesasPendientes);
+    
+    // console.log('array de promesas resultas', arrPromesas);
 
-    console.log('array de stats unique', arrStatsUnique);
+    // console.log('array de stats unique', arrStatsUnique);
 
-    if(options.validate){
-      resolve(arrPromesas);
-    } else{
+    const arrProm = Promise.all(promesasPendientes); // convierto mi array de promesas pendiente en una sola promesa 
+
+    // console.log('promesas all', arrProm);
+
+    // arrProm
+    //   .then((res) => {
+    //     resolve(res);
+    //   });
+
+    if(options.validate && !options.stats){
+      console.log('estoy aqui');
+      arrProm.then((res) => resolve(res));
+
+      
+      // resolve(promesasPendientes);
+    } else if(options.stats && !options.validate){
+      resolve(arrStatsUnique);
+
+    } else if (options.stats && options.validate) {
+      // arrProm.then((res) => {
+      //   const broken = functions.statsBroken(res);
+      //   console.log(broken);
+      // });
+      resolve([arrStatsUnique, arrStatsBroquen]); // obtener los links broken del array de promesas
+
+      // resolve('En construcción ...')
+    }
+    else{
       resolve(arrObjetos);
     }
-
-    if(options.stats){
-      resolve(arrStatsUnique);
-    } 
-
-    if (options.stats && options.validate) {
-      resolve([arrStatsUnique, arrStatsBroquen]);
-    }
-    // else{
-    //   resolve(arrObjetos);
-    // }
 
   });
   return promiseMdLinks;
@@ -95,9 +108,13 @@ function mdLinks(path, options) {
 
 
 
-mdLinks(rutaDir, {validate: true})
+mdLinks(rutaDir)
   .then((res) => {
     console.log('promesa: =>', res);
+    // res.forEach(elementPromise => {
+    //   elementPromise.then((resPromise) => console.log(resPromise));
+      
+    // });
   })
   .catch((err) => {
     console.log('err: ', err);
