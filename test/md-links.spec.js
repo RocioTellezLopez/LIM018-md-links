@@ -154,11 +154,11 @@ describe('objectLinks', () =>{
     }];
     expect(objLinks).toEqual(objResult);
   });
-  it('deberia de retornar mensaje si el argumento es un array vacio', () => {
+  it('deberia de retornar un array vacio si el archivo no tiene links', () => {
     const arrEmpty = [];
     const path = './path/mdPrueba.md';
     const objLinks = objecLinks(arrEmpty, path);
-    expect(objLinks).toBe('No hay links en el archivo');
+    expect(objLinks).toEqual([]);
   });
 });
 
@@ -194,26 +194,30 @@ describe('statusHTTP', () => {
       expect(response).toEqual(arrResult);
     });
   });
-  // it('deberia de retornar un array con objetos con propiedades de status: 404  y message: Fail', () => {
-  //   axios.get.mockImplementation(() => Promise.reject({status: 404, statusText: 'Fail'}));
-  //   const arrayLinks = [{
-  //     text: 'Node.js http.get - Documentación oficial',
-  //     href: 'https://nodejs.org/apiia/http.html#http_http_get_options_callback',
-  //     file: './example/exampleFile.md'
-  //   }];
-  //   const arrayStatusFail = statusHTTP(arrayLinks);
-  //   const arrResultFail = [{
-  //     text: 'Node.js http.get - Documentación oficial',
-  //     href: 'https://nodejs.org/apiia/http.html#http_http_get_options_callback',
-  //     file: './example/exampleFile.md',
-  //     status: 404,
-  //     message: 'Fail'
-  //   }];
-  //   arrayStatusFail.then((res) => {
-  //     console.log(res);
-  //     expect(res).toEqual(arrResultFail);
-  //   });
-  // });
+
+  it('deberia de retornar un array con objetos con propiedades de status: 404  y message: Fail', () => {
+    axios.get.mockImplementation(() => Promise.reject(response: {status: 404, statusText: 'Fail'}));
+    const arrayLinks = [{
+      text: 'Node.js http.get - Documentación oficial',
+      href: 'https://nodejs.org/apiia/http.html#http_http_get_options_callback',
+      file: './example/exampleFile.md'
+    }];
+    const arrayStatusFail = statusHTTP(arrayLinks);
+    const arrResultFail = [{
+      text: 'Node.js http.get - Documentación oficial',
+      href: 'https://nodejs.org/apiia/http.html#http_http_get_options_callback',
+      file: './example/exampleFile.md',
+      status: 404,
+      message: 'Fail'
+    }];
+    arrayStatusFail.catch((res) => {
+      if(res.response) {
+        expect(res).toEqual(arrResultFail);
+      }
+      // console.log(res);
+      // revisar test
+    });
+  });
 });
 
 describe('statsUnique', () => {
