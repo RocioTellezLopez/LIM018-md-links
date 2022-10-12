@@ -1,5 +1,6 @@
 const functions = require('./methods.js');
 
+
 const ruta = './example/exampleFile.md';
 const ruta2 = '../img/img.jpg';
 const ruta3 = './example/index.html';
@@ -90,11 +91,21 @@ function mdLinks(path, options) {
       resolve(arrStatsUnique);
 
     } else if (options.stats && options.validate) {
-      // arrProm.then((res) => {
-      //   const broken = functions.statsBroken(res);
-      //   console.log(broken);
-      // });
-      resolve([arrStatsUnique, arrStatsBroquen]); // obtener los links broken del array de promesas
+      arrProm.then((res) => {
+        const arrBrok = [];
+        // console.log('primera peticion', res);
+        // console.log('se termina la peticion')
+        res.forEach((resElem) => {
+          // console.log(resElem);
+          const broken = functions.statsBroken(resElem);
+          arrBrok.push(broken);
+
+        });
+        // // const broken = functions.statsBroken(res);
+        // console.log(arrBrok);
+        resolve([arrStatsUnique, arrBrok]);
+      });
+      // resolve([arrStatsUnique, arrStatsBroquen]); // obtener los links broken del array de promesas
 
       // resolve('En construcción ...')
     }
@@ -108,19 +119,24 @@ function mdLinks(path, options) {
 
 
 
-mdLinks(rutaDir)
-  .then((res) => {
-    console.log('promesa: =>', res);
-    // res.forEach(elementPromise => {
-    //   elementPromise.then((resPromise) => console.log(resPromise));
+// mdLinks(rutaDir, {validate: true, stats: true})
+//   .then((res) => {
+//     console.log('promesa: =>', res);
+//     // res.forEach(elementPromise => {
+//     //   elementPromise.then((resPromise) => console.log(resPromise));
       
-    // });
-  })
-  .catch((err) => {
-    console.log('err: ', err);
-  });
-
+//     // });
+//   })
+//   .catch((err) => {
+//     console.log('err: ', err);
+//   });
 // console.log(functions.contentDir(rutaAbsoluta));
+
+
+
+
+
+
 
 module.exports = {
   mdLinks,
