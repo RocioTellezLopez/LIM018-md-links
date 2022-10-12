@@ -12,4 +12,4 @@ links podría plantearse de las siguientes maneras (todas válidas):
   que nos devuelve un arreglo de _tokens_ que podemos recorrer para identificar
   los links.
 * Siguiendo otro camino completamente, podríamos usar
-  [expresiones regulares (`RegExp`)](https://developer.mozilla.org/es/docs/Web/JavaScript/Guide/Regular_Expressions).
+  [expresiones regulares (`RegExp`)](https://developer.mozilla.org/es/docs/Web/JavaScripttt/Guide/Regular_Expressions).
