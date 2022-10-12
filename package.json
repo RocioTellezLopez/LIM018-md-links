@@ -31,6 +31,6 @@
     "axios": "^0.27.2"
   },
   "bin": {
-    "md-links": "./cli.js"
+    "md-links": "./src/cli.js"
   }
 }
