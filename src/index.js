@@ -53,12 +53,6 @@ function mdLinks(path, options) {
       
       promesasPendientes.push(statusPrommise);
 
-      // statusPrommise.then((resultLinks) => {
-      //   // console.log('resultado de la promesa',resultLinks);
-      //   arrPromesas.push(resultLinks);
-      //   const linksBroken = functions.statsBroken(resultLinks);
-      //   arrStatsBroquen.push(linksBroken);
-      // });
 
       const linksUnique = functions.statsUnique(objLinks);
       arrStatsUnique.push(linksUnique);
@@ -66,43 +60,25 @@ function mdLinks(path, options) {
       arrObjetos.push(objLinks);
     });
     
-    // console.log('promesas pendientes', promesasPendientes);
-    
-    // console.log('array de promesas resultas', arrPromesas);
-
-    // console.log('array de stats unique', arrStatsUnique);
-
     const arrProm = Promise.all(promesasPendientes); // convierto mi array de promesas pendiente en una sola promesa 
 
-    // console.log('promesas all', arrProm);
-
-    // arrProm
-    //   .then((res) => {
-    //     resolve(res);
-    //   });
-
     if(options.validate && !options.stats){
-      console.log('estoy aqui');
+
       arrProm.then((res) => resolve(res));
 
-      
-      // resolve(promesasPendientes);
     } else if(options.stats && !options.validate){
       resolve(arrStatsUnique);
 
     } else if (options.stats && options.validate) {
       arrProm.then((res) => {
         const arrBrok = [];
-        // console.log('primera peticion', res);
-        // console.log('se termina la peticion')
         res.forEach((resElem) => {
           // console.log(resElem);
           const broken = functions.statsBroken(resElem);
           arrBrok.push(broken);
 
         });
-        // // const broken = functions.statsBroken(res);
-        // console.log(arrBrok);
+        // const objStatsBroken = arrStatsUnique.map((element) => )
         resolve([arrStatsUnique, arrBrok]);
       });
       // resolve([arrStatsUnique, arrStatsBroquen]); // obtener los links broken del array de promesas
@@ -119,7 +95,7 @@ function mdLinks(path, options) {
 
 
 
-// mdLinks(rutaDir, {validate: true, stats: true})
+// mdLinks(rutaMd, {validate: true, stats: true})
 //   .then((res) => {
 //     console.log('promesa: =>', res);
 //     // res.forEach(elementPromise => {
