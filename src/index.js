@@ -76,10 +76,14 @@ function mdLinks(path, options) {
           // console.log(resElem);
           const broken = functions.statsBroken(resElem);
           arrBrok.push(broken);
-
+          
         });
-        // const objStatsBroken = arrStatsUnique.map((element) => )
-        resolve([arrStatsUnique, arrBrok]);
+        const statsBroken = arrStatsUnique;
+
+        for (let i = 0; i < statsBroken.length; i++) {
+          statsBroken[i].broken = arrBrok[i].broken;
+        }
+        resolve(statsBroken);
       });
       // resolve([arrStatsUnique, arrStatsBroquen]); // obtener los links broken del array de promesas
 
@@ -95,7 +99,7 @@ function mdLinks(path, options) {
 
 
 
-// mdLinks(rutaMd, {validate: true, stats: true})
+// mdLinks(rutaDir, {validate: true, stats: true})
 //   .then((res) => {
 //     console.log('promesa: =>', res);
 //     // res.forEach(elementPromise => {
@@ -106,13 +110,11 @@ function mdLinks(path, options) {
 //   .catch((err) => {
 //     console.log('err: ', err);
 //   });
+
+
 // console.log(functions.contentDir(rutaAbsoluta));
 
-
-
-
-
-
+// console.log(arr1)
 
 module.exports = {
   mdLinks,
