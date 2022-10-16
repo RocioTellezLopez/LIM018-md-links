@@ -11,66 +11,96 @@ const argv = process.argv;
 // console.log(argv);
 const options = {validate: argv.includes('--validate'), stats: argv.includes('--stats')};
 
+const validate = argv.includes('--validate');
+
+console.log(validate);
 
 
 if(argv.length === 2) {
-  console.log(`
+  console.log(chalk.cyan(`
     ███╗   ███╗██████╗       ██╗     ██╗███╗   ██╗██╗  ██╗███████╗
     ████╗ ████║██╔══██╗      ██║     ██║████╗  ██║██║ ██╔╝██╔════╝
     ██╔████╔██║██║  ██║█████╗██║     ██║██╔██╗ ██║█████╔╝ ███████╗
     ██║╚██╔╝██║██║  ██║╚════╝██║     ██║██║╚██╗██║██╔═██╗ ╚════██║
     ██║ ╚═╝ ██║██████╔╝      ███████╗██║██║ ╚████║██║  ██╗███████║
     ╚═╝     ╚═╝╚═════╝       ╚══════╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝
-                                                                  
-    `);
-
-}
-
-if(argv.length === 3 && argv.includes(route)) {
+                  
+                  ╔════════◈◈◈◈◈◈◈◈════════╗
+                      By Rocio Tellez L.    
+                  ╚════════◈◈◈◈◈◈◈◈════════╝                                                       
+    `));
+} else if(argv.length === 3 && argv.includes(route)) {
   mdLinks(route, options)
     .then((resArrPromise) => {
-    
-      // console.log('promesa: =>', resArrPromise.flat());
+      console.log(resArrPromise);
       const objPromise = resArrPromise.flat();
-      
-      console.log('◈◇◈◇◈◇◈◇ MD-LINKS by Rocio Tellez ◈◇◈◇◈◇◈◇◈');
-
       objPromise.forEach(objLinks => {
-        console.log('◈◇◈◇◈◇◈◇ Links Encontrados ◈◇◈◇◈◇◈◇◈');
+        console.log(chalk.cyan(`
+        ◈◇◈◇◈◇◈◇ Links Encontrados ◈◇◈◇◈◇◈◇◈
 
-        console.log(chalk.blue('Text:'), objLinks.text);
-        console.log(chalk.blue('Href:'), objLinks.href);
-        console.log(chalk.blue('File:'), objLinks.file);
-
-        // console.log(objLinks);
-
+        Text: ${objLinks.text}
+        Href: ${objLinks.href}
+        File: ${objLinks.file}
+        `));
       });
-      // resArrPromise.forEach(elementPromise => {
-      //   elementPromise.then((resPromise) => console.log(resPromise));
-      
-    // });
     })
     .catch((err) => {
-      console.log('err: ', err);
+      console.log(chalk.red(`
+      err: ${err}`));
+    });
+} else if(argv.length === 4 && argv.includes('--validate')) {
+  mdLinks(route, options)
+    .then((resArrPromise) => {
+      const objPromise = resArrPromise.flat();
+      objPromise.forEach(objLinks => {
+        console.log(chalk.cyan(`
+        ◈◇◈◇◈◇◈◇ Links Encontrados --validate ◈◇◈◇◈◇◈◇◈
+
+        Text: ${objLinks.text}
+        Href: ${objLinks.href}
+        File: ${objLinks.file}
+        Status: ${objLinks.status}
+        Message: ${objLinks.message}
+        `));
+      });
+    })
+    .catch((err) => {
+      console.log(chalk.red(`
+      err: ${err}`));
+    });
+} else if(argv.length === 4 && argv.includes('--stats')) {
+  mdLinks(route, options)
+    .then((resArrPromise) => {
+      const objPromise = resArrPromise.flat();
+      objPromise.forEach(objLinks => {
+        console.log(chalk.cyan(`
+        ◈◇◈◇◈◇◈◇ Links --stats ◈◇◈◇◈◇◈◇◈
+
+        Total: ${objLinks.total}
+        Unique: ${objLinks.unique}
+        `));
+      });
+    })
+    .catch((err) => {
+      console.log(chalk.red(`
+      err: ${err}`));
+    });
+}else if(argv.length === 5 && argv.includes('--stats') && argv.includes('--validate')) {
+  mdLinks(route, options)
+    .then((resArrPromise) => {
+      const objPromise = resArrPromise.flat(); //No aplica flat()
+      objPromise.forEach(objLinks => {
+        console.log(chalk.cyan(`
+        ◈◇◈◇◈◇◈◇ Links --stats --validate ◈◇◈◇◈◇◈◇◈
+
+        Total: ${objLinks.total}
+        Unique: ${objLinks.unique}
+        Broken: ${objLinks.broken}
+        `));
+      });
+    })
+    .catch((err) => {
+      console.log(chalk.red(`
+      err: ${err}`));
     });
 }
-  
-// console.log(options);
-// console.log(chalk.blue(`Este es la ruta ingresada: ${route} ${options}`));
-
-// inicio 
-
-
-
-// mdLinks(route, options)
-//   .then((resArrPromise) => {
-    
-//     console.log('promesa: =>', resArrPromise);
-//     // resArrPromise.forEach(elementPromise => {
-//     //   elementPromise.then((resPromise) => console.log(resPromise));
-      
-//     // });
-//   })
-//   .catch((err) => {
-//     console.log('err: ', err);
-//   });
