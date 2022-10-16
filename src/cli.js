@@ -1,25 +1,106 @@
 #!/usr/bin/env node
 
-const {mdLinks} = require('./src/api.js');
+const {mdLinks} = require('./index.js');
+const chalk = require('chalk');
 
-// const word = process.argv[2];
 
-// const length = word.length;
-
-// const [,, ...argv] = process.argv;
-
-// console.log(`Words Length ${length}`);
-
-// console.log(`hello: ${argv}`);
 const route = process.argv[2];
-const options = process.argv[3];
 
-// console.log(`Este es la ruta ingresada: ${route} ${validate} ${stats}`);
+const argv = process.argv;
 
-mdLinks(route, {validate: true} )
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+// console.log(argv);
+const options = {validate: argv.includes('--validate'), stats: argv.includes('--stats')};
+
+const validate = argv.includes('--validate');
+
+console.log(validate);
+
+
+if(argv.length === 2) {
+  console.log(chalk.cyan(`
+    ███╗   ███╗██████╗       ██╗     ██╗███╗   ██╗██╗  ██╗███████╗
+    ████╗ ████║██╔══██╗      ██║     ██║████╗  ██║██║ ██╔╝██╔════╝
+    ██╔████╔██║██║  ██║█████╗██║     ██║██╔██╗ ██║█████╔╝ ███████╗
+    ██║╚██╔╝██║██║  ██║╚════╝██║     ██║██║╚██╗██║██╔═██╗ ╚════██║
+    ██║ ╚═╝ ██║██████╔╝      ███████╗██║██║ ╚████║██║  ██╗███████║
+    ╚═╝     ╚═╝╚═════╝       ╚══════╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝
+                  
+                  ╔════════◈◈◈◈◈◈◈◈════════╗
+                      By Rocio Tellez L.    
+                  ╚════════◈◈◈◈◈◈◈◈════════╝                                                       
+    `));
+} else if(argv.length === 3 && argv.includes(route)) {
+  mdLinks(route, options)
+    .then((resArrPromise) => {
+      console.log(resArrPromise);
+      const objPromise = resArrPromise.flat();
+      objPromise.forEach(objLinks => {
+        console.log(chalk.cyan(`
+        ◈◇◈◇◈◇◈◇ Links Encontrados ◈◇◈◇◈◇◈◇◈
+
+        Text: ${objLinks.text}
+        Href: ${objLinks.href}
+        File: ${objLinks.file}
+        `));
+      });
+    })
+    .catch((err) => {
+      console.log(chalk.red(`
+      err: ${err}`));
+    });
+} else if(argv.length === 4 && argv.includes('--validate')) {
+  mdLinks(route, options)
+    .then((resArrPromise) => {
+      const objPromise = resArrPromise.flat();
+      objPromise.forEach(objLinks => {
+        console.log(chalk.cyan(`
+        ◈◇◈◇◈◇◈◇ Links Encontrados --validate ◈◇◈◇◈◇◈◇◈
+
+        Text: ${objLinks.text}
+        Href: ${objLinks.href}
+        File: ${objLinks.file}
+        Status: ${objLinks.status}
+        Message: ${objLinks.message}
+        `));
+      });
+    })
+    .catch((err) => {
+      console.log(chalk.red(`
+      err: ${err}`));
+    });
+} else if(argv.length === 4 && argv.includes('--stats')) {
+  mdLinks(route, options)
+    .then((resArrPromise) => {
+      const objPromise = resArrPromise.flat();
+      objPromise.forEach(objLinks => {
+        console.log(chalk.cyan(`
+        ◈◇◈◇◈◇◈◇ Links --stats ◈◇◈◇◈◇◈◇◈
+
+        Total: ${objLinks.total}
+        Unique: ${objLinks.unique}
+        `));
+      });
+    })
+    .catch((err) => {
+      console.log(chalk.red(`
+      err: ${err}`));
+    });
+}else if(argv.length === 5 && argv.includes('--stats') && argv.includes('--validate')) {
+  mdLinks(route, options)
+    .then((resArrPromise) => {
+      const objPromise = resArrPromise.flat(); //No aplica flat()
+      objPromise.forEach(objLinks => {
+        console.log(chalk.cyan(`
+        ◈◇◈◇◈◇◈◇ Links --stats --validate ◈◇◈◇◈◇◈◇◈
+
+        Total: ${objLinks.total}
+        Unique: ${objLinks.unique}
+        Broken: ${objLinks.broken}
+        `));
+      });
+    })
+    .catch((err) => {
+      console.log(chalk.red(`
+      err: ${err}`));
+    });
+}

@@ -5,5 +5,5 @@ encontrando, junto con la ruta del archivo donde aparece y el texto
 que hay dentro del link (truncado a 50 caracteres).
 
 [Códigos de estado de respuesta HTTP - MDN](https://developer.mozilla.org/es/docs/Web/HTTP/Status)
-[Node.js file system - Documentación oficial](https://nodejs.org/api/fs.html)
+[Node.js file system - Documentación oficial](https://nodejs.org/apiia/fs.html)
 [Node.js http.get - Documentación oficial](https://nodejs.org/api/http.html#http_http_get_options_callback)
