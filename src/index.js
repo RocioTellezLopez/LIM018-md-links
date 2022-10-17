@@ -23,7 +23,6 @@ function mdLinks(path, options) {
 
     if(functions.isDirectory(path)) { // si no es un directorio agrega el path a un array;
       const arrFileDir = functions.contentDir(path); // array con el contenido del directorio
-      // console.log('este es el contenido del directorio', arrFileDir);
       arrFiles.push(arrFileDir);
     }
     if(functions.isFile(path)) {
@@ -31,63 +30,46 @@ function mdLinks(path, options) {
     }
     
     arrFiles = arrFiles.flat();
+
     const mdFiles = arrFiles.filter((files) => functions.mdExtension(files)); // array con archivos .md
     
     if(mdFiles.length === 0){
       reject('La ruta ingresada no contiene ningun archivo .md'); //
     }
-    // console.log('---------');
-    // console.log('este es md ->', mdFiles);
-    const arrObjetos = [];
-    const arrStatsUnique = [];
-    const arrStatsBroquen = []; //
+
+    let arrObjetos = [];
     const promesasPendientes = [];
 
     mdFiles.forEach((fileMd) => {
       const contentFile = functions.readFile(fileMd);
       const arrayLinks = functions.saveArrayLinks(contentFile);
-      // console.log(arrayLinks);
+
       const objLinks = functions.objecLinks(arrayLinks, fileMd);
-      // console.log('objetos dentro de for', objLinks);
-      const statusPrommise = functions.statusHTTP(objLinks); //.then((res) => console.log('promesas de status', res));
-      
+      arrObjetos.push(objLinks);
+
+      const statusPrommise = functions.statusHTTP(objLinks);
       promesasPendientes.push(statusPrommise);
 
-
-      const linksUnique = functions.statsUnique(objLinks);
-      arrStatsUnique.push(linksUnique);
-      
-      arrObjetos.push(objLinks);
     });
     
+    arrObjetos = arrObjetos.flat();
     const arrProm = Promise.all(promesasPendientes); // convierto mi array de promesas pendiente en una sola promesa 
+    const statsUnique = functions.statsUnique(arrObjetos);
 
     if(options.validate && !options.stats){
-
-      arrProm.then((res) => resolve(res));
+      arrProm.then((res) => resolve(res.flat()));
 
     } else if(options.stats && !options.validate){
-      resolve(arrStatsUnique);
+      resolve(statsUnique);
 
     } else if (options.stats && options.validate) {
       arrProm.then((res) => {
-        const arrBrok = [];
-        res.forEach((resElem) => {
-          // console.log(resElem);
-          const broken = functions.statsBroken(resElem);
-          arrBrok.push(broken);
-          
-        });
-        const statsBroken = arrStatsUnique;
+        const statsBroken = functions.statsBroken(res.flat());
+        const uniqueBroken = statsUnique;
+        uniqueBroken.broken = statsBroken.broken;
 
-        for (let i = 0; i < statsBroken.length; i++) {
-          statsBroken[i].broken = arrBrok[i].broken;
-        }
-        resolve(statsBroken);
+        resolve(uniqueBroken);
       });
-      // resolve([arrStatsUnique, arrStatsBroquen]); // obtener los links broken del array de promesas
-
-      // resolve('En construcción ...')
     }
     else{
       resolve(arrObjetos);
@@ -110,11 +92,6 @@ function mdLinks(path, options) {
 //   .catch((err) => {
 //     console.log('err: ', err);
 //   });
-
-
-// console.log(functions.contentDir(rutaAbsoluta));
-
-// console.log(arr1)
 
 module.exports = {
   mdLinks,
