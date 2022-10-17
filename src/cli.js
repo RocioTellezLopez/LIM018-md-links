@@ -5,15 +5,9 @@ const chalk = require('chalk');
 
 
 const route = process.argv[2];
-
 const argv = process.argv;
 
-// console.log(argv);
 const options = {validate: argv.includes('--validate'), stats: argv.includes('--stats')};
-
-const validate = argv.includes('--validate');
-
-console.log(validate);
 
 
 if(argv.length === 2) {
@@ -32,9 +26,7 @@ if(argv.length === 2) {
 } else if(argv.length === 3 && argv.includes(route)) {
   mdLinks(route, options)
     .then((resArrPromise) => {
-      console.log(resArrPromise);
-      const objPromise = resArrPromise.flat();
-      objPromise.forEach(objLinks => {
+      resArrPromise.forEach(objLinks => {
         console.log(chalk.cyan(`
         ◈◇◈◇◈◇◈◇ Links Encontrados ◈◇◈◇◈◇◈◇◈
 
@@ -51,8 +43,7 @@ if(argv.length === 2) {
 } else if(argv.length === 4 && argv.includes('--validate')) {
   mdLinks(route, options)
     .then((resArrPromise) => {
-      const objPromise = resArrPromise.flat();
-      objPromise.forEach(objLinks => {
+      resArrPromise.forEach(objLinks => {
         console.log(chalk.cyan(`
         ◈◇◈◇◈◇◈◇ Links Encontrados --validate ◈◇◈◇◈◇◈◇◈
 
@@ -71,15 +62,13 @@ if(argv.length === 2) {
 } else if(argv.length === 4 && argv.includes('--stats')) {
   mdLinks(route, options)
     .then((resArrPromise) => {
-      const objPromise = resArrPromise.flat();
-      objPromise.forEach(objLinks => {
-        console.log(chalk.cyan(`
-        ◈◇◈◇◈◇◈◇ Links --stats ◈◇◈◇◈◇◈◇◈
+      // console.log(resArrPromise);
+      console.log(chalk.cyan(`
+      ◈◇◈◇◈◇◈◇ Links --stats ◈◇◈◇◈◇◈◇◈
 
-        Total: ${objLinks.total}
-        Unique: ${objLinks.unique}
-        `));
-      });
+      Total: ${resArrPromise.total}
+      Unique: ${resArrPromise.unique}
+      `));
     })
     .catch((err) => {
       console.log(chalk.red(`
@@ -88,19 +77,18 @@ if(argv.length === 2) {
 }else if(argv.length === 5 && argv.includes('--stats') && argv.includes('--validate')) {
   mdLinks(route, options)
     .then((resArrPromise) => {
-      const objPromise = resArrPromise.flat(); //No aplica flat()
-      objPromise.forEach(objLinks => {
-        console.log(chalk.cyan(`
-        ◈◇◈◇◈◇◈◇ Links --stats --validate ◈◇◈◇◈◇◈◇◈
+      console.log(chalk.cyan(`
+      ◈◇◈◇◈◇◈◇ Links --stats --validate ◈◇◈◇◈◇◈◇◈
 
-        Total: ${objLinks.total}
-        Unique: ${objLinks.unique}
-        Broken: ${objLinks.broken}
-        `));
-      });
+      Total: ${resArrPromise.total}
+      Unique: ${resArrPromise.unique}
+      Broken: ${resArrPromise.broken}
+      `));
     })
     .catch((err) => {
       console.log(chalk.red(`
       err: ${err}`));
     });
+} else {
+  console.log(chalk.green('Comando no valido'));
 }
