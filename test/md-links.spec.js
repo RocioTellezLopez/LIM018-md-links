@@ -8,7 +8,9 @@ const { pathExists,
   objecLinks,
   statusHTTP,
   statsUnique,
-  statsBroken} = require('../src/methods.js');
+  statsBroken,
+  readDirectory,
+  contentDir } = require('../src/methods.js');
 
 const axios = require('axios');
 jest.mock('axios');
@@ -196,7 +198,7 @@ describe('statusHTTP', () => {
   });
 
   it('deberia de retornar un array con objetos con propiedades de status: 404  y message: Fail', () => {
-    axios.get.mockImplementation(() => Promise.reject(response: {status: 404, statusText: 'Fail'}));
+    axios.get.mockImplementation(() => Promise.reject({response: {status: 404}}));
     const arrayLinks = [{
       text: 'Node.js http.get - Documentación oficial',
       href: 'https://nodejs.org/apiia/http.html#http_http_get_options_callback',
@@ -212,12 +214,13 @@ describe('statusHTTP', () => {
     }];
     arrayStatusFail.catch((res) => {
       if(res.response) {
-        expect(res).toEqual(arrResultFail);
+        expect(res).toEqual(arrResultFail); // revisar mock
       }
       // console.log(res);
       // revisar test
     });
   });
+  
 });
 
 describe('statsUnique', () => {
@@ -315,5 +318,52 @@ describe('statsBroken', () => {
     const linksBrokenEmpty = statsBroken(arrEmpty);
 
     expect(linksBrokenEmpty).toEqual({broken: 0});
+  });
+
+  it('deberia retornar mensaje de error si el argumento no es un array', () => {
+    const arrFiles = '';
+    const linksBroken = statsBroken(arrFiles);
+
+    expect(linksBroken).toBe('err: El argumento ingresado no es un array.');
+  });
+});
+
+describe('readDirectory', () => {
+  it('deberia devolver un array con el contenido de la ruta', () => {
+    const path = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example\\dirPrueba';
+    const arrDir = readDirectory(path);
+    const arrDirResult = ['C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example\\dirPrueba\\dirExample'];
+
+    expect(arrDir).toEqual(arrDirResult);
+  });
+
+  it('deberia devolver un array vacio si la ruta no contiene ningun archivo o directorio', () => {
+    const path = '';
+    const arrDirEmpty = readDirectory(path);
+     
+    expect(arrDirEmpty).toEqual([]); // revisar
+  });
+
+  it('deberia devolver error si el argumento no es valido', () => {
+    const path = 12345;
+    const arrDirErr = readDirectory(path);
+     
+    expect(arrDirErr).toBe('Err: el argumento no es valido');
+  });
+});
+
+describe('contentDir', () => {
+  it('deberia de retornar un array con archivos de todo el contenido de un directorio', () => {
+    const path = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example\\dirPrueba';
+    const arrDirCont = contentDir(path);
+    const arrResultDir = ['C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example\\dirPrueba\\dirExample\\prueba.md'];
+    expect(arrDirCont).toEqual(arrResultDir);
+  });
+
+  it('deberia de retornar un array vacio si no hay archivos en el contenido del directorio', () => {
+    const path = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example\\dirEmpty';
+    const arrDirCont = contentDir(path);
+    const arrResultDir = [];
+    expect(arrDirCont).toEqual(arrResultDir);
   });
 });
