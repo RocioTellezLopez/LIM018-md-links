@@ -154,6 +154,30 @@ function statsBroken(arrayLinks) {
   
 }
 
+function isDirectory(path) {
+  return fs.statSync(path).isDirectory(); 
+}
+
+function isFile(path) {
+  return fs.statSync(path).isFile();  
+}
+
+function readDirectory(pathFile) {
+  try {
+    if( pathFile !== '') {
+      const dirRead = fs.readdirSync(pathFile, 'utf-8');
+      const newArrDir = dirRead.map((dir) => path.join(pathFile, dir));
+      return newArrDir;
+    } else {
+      return []; // revisar si el path ingresado es un string vacio
+    }
+  } catch (error) {
+    return 'Err: el argumento no es valido';
+  }
+  
+  
+}
+
 // const rutaAbs1 = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example\\exampleFile.md';
 const rutaAbs2 = 'C:\\Users\\USUARIO\\laboratoria\\LIM018-md-links\\example';
 
@@ -179,21 +203,7 @@ function contentDir(path) {
   return arrFile.flat();
 }
 
-// console.log(contentDir(rutaAbs2));
 
-function isDirectory(path) {
-  return fs.statSync(path).isDirectory(); 
-}
-
-function isFile(path) {
-  return fs.statSync(path).isFile();  
-}
-
-function readDirectory(pathFile) {
-  const dirRead = fs.readdirSync(pathFile, 'utf-8');
-  const newArrDir = dirRead.map((dir) => path.join(pathFile, dir));
-  return newArrDir;
-}
 
 
 
