@@ -90,5 +90,5 @@ if(argv.length === 2) {
       err: ${err}`));
     });
 } else {
-  console.log(chalk.green('Comando no valido'));
+  console.log(chalk.green('Comando no valido 😎'));
 }
